@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="modulepreload" href="./script.js" />
     <script type="module" src="./script.js">
-        let po = document.getElementsByClassName('po')[0];
-        console.log(po);
+
         
           import {MyWysiwyg, My_Wysiwyg} from "./script.js";
-          
+
           let textarea = document.getElementById('tedfv');
           let mv = new MyWysiwyg(textarea, {buttons: ["bold", "italic", "color"]});
           My_Wysiwyg(textarea);
@@ -14,6 +14,12 @@
           console.log("aaaa");
         //   MyWysiwyg(textarea);
 
+      </script>
+      <script type="module">
+        import {lol} from "./mo.js";
+        let po = document.getElementsByClassName('po')[0];
+        console.log(po);
+        let zzd = new lol(po, {buttons: ["bold", "italic"]});
       </script>
       <script src="modul.js"></script>
     <meta charset="UTF-8">
