@@ -1,2 +1,2 @@
-Docu compréhension branche https://fr.javascript.info/selection-range
+Docu compréhension range https://fr.javascript.info/selection-range
 
