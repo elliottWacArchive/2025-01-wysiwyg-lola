@@ -2,23 +2,36 @@
 <html lang="en">
 <head>
     <script type="module">
-        let po = document.getElementsByClassName('po')[0];
-        console.log(po);
-        
-        import {MyWysiwyg, My_Wysiwyg} from "./script_code_antho.js";
+        import {MyWysiwyg} from "./modules/my_wysiwyg.js";
         let textarea = document.getElementById('tedfv');
-        let mv = new MyWysiwyg(textarea, {buttons: ["bold", "italic", "color"]});
-        My_Wysiwyg(textarea);
-        My_Wysiwyg(po);
-        console.log("aaaa");
-        //   MyWysiwyg(textarea);
-
-        </script>
+        let mv = new MyWysiwyg(textarea);
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        background-color: blue;
+    }
+    #tedfv {
+        width: 50vw;
+        height: 50vh;
+        margin: 0 auto;
+        background-color: rgb(68, 255, 0);
+    }
+</style>
 <body>
+<<<<<<< HEAD
     <textarea name="ici" id="te">
 
     </textarea>
@@ -38,5 +51,13 @@
             </p>
         </i>
     </p>
+=======
+    <div id="tedfv">
+        <p>Anthonin</p>
+        <p>Lola</p>
+        <p>et Elliott</p>
+        <p><b>Sont un super Trio!!!</b></p>
+    </div>
+>>>>>>> main
 </body>
 </html>
