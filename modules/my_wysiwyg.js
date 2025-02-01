@@ -64,19 +64,24 @@ class MyWysiwyg {
         if (selection.rangeCount > 0) {
             for (let i = 0; i < selection.rangeCount; i++) {
                 const range = selection.getRangeAt(i);
-                // let node = range.startContainer.parentElement;
-                // console.log(node);
+                let node = range.startContainer.parentElement;
+                console.log(range);
                 let all = range.cloneContents();
                 // console.log(all);
-                console.log(this.isAlradyStyle(style, node));                 
-                if (this.isAlradyStyle(style, all.childNodes)) {
-                    console.log("trouvé " + style)
+                console.log(node);
+                console.log(this.isAlradyStyle(style, node));
+                console.log("ICI recherche noeud de style");
+                
+                console.log(all.childNodes);
+
+                if (this.isAlradyStyle(style, node)) {
                     let node = range.startContainer.parentNode;
-                    console.log(node);
                     let all = range.cloneContents();
                     console.log("AAAAAAAA");
-                    
+                    console.log("trouvé " + style)
+                    console.log(node);
                     console.log(all); // FAIRE EN SORTE QUE ÇA SUPPRIME LA BALISE STYLE À L'INTERIEUR DE LA BALISE
+                    
                 } else {
                     console.log(range);
                     this.applyStyle(style, range);
@@ -95,22 +100,31 @@ class MyWysiwyg {
 
     isAlradyStyle(style, node) {
         console.log(node);
+        // console.log(node.tagName);
+        console.log(style);
+        
         // console.log(noeuds.length);
         // for (let i = 0; i < noeuds.length; i++){
-        // noeuds.forEach(node => {
-            if (node.nodeType === Node.TEXT_NODE) {
-                console.log("Text node:", node.textContent); // VERIFIE SI LE TYPE DU NODE EST UN TEXTE
-            } else if (node.nodeType === Node.ELEMENT_NODE) {
+        // nodes.forEach(node => {
+            // if (node.nodeType === Node.TEXT_NODE) {
+            //     console.log("Text node:", node.textContent); // VERIFIE SI LE TYPE DU NODE EST UN TEXTE
+            // } 
+            if (node.nodeType === Node.ELEMENT_NODE) {
                 console.log("Element node:", node.tagName); // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
                 if (node.tagName === style) {
                     // node.remove(); RAJOUTER UNE FONCTION POUR Y EXTRAIRE LE TEXTE
+                    console.log(node);
+                    console.log("Pret à supprimer noeud");
+                    
                     return true; 
-                }
-                else { this.isAlradyStyle(style, node.childNodes); }
+                } else { 
+                    console.log(node.childNodes);
+                    this.isAlradyStyle(style, node.childNodes);
+            } 
+        // })
             }
-            return false;
-        // });
-    }
+        return false;
+}
     // LE RANGECOUNT RENVOIE LE NOMBRE DE SELECTIONS QU'IL Y A SUR LA PAGE GetRangeAt
     // ContainsNode
 
@@ -133,6 +147,8 @@ class MyWysiwyg {
     }
 
     applyStyle(style, noeuds) {
+        console.log(noeuds);
+        
         let object = document.createElement(style);
         object.appendChild(noeuds.extractContents());
         noeuds.insertNode(object);
