@@ -65,10 +65,14 @@ class MyWysiwyg {
     // LE RANGECOUNT RENVOIE LE NOMBRE DE SELECTIONS QU'IL Y A SUR LA PAGE GetRangeAt
     // ContainsNode
 
-    getCurrentRange() {
-        let selection = window.getSelection();
-        return selection.rangeCount ? selection.getRangeAt(0) : null;
-    }
+    // getCurrentRange() {
+    //     let selection = window.getSelection();
+    //     return selection.rangeCount ? selection.getRangeAt(0) : null;
+    // }
+    
+    
+
+    document.addEventListener
 
     applyStyle(style) {
         let range = this.getCurrentRange();
