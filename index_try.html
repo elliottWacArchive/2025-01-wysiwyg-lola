@@ -2,41 +2,59 @@
 <html lang="en">
 <head>
     <script type="module">
-        let po = document.getElementsByClassName('po')[0];
-        console.log(po);
-        
-        import {MyWysiwyg, My_Wysiwyg} from "./script_code_antho.js";
+        import {MyWysiwyg} from "./modules/my_wysiwyg.js";
         let textarea = document.getElementById('tedfv');
-        let mv = new MyWysiwyg(textarea, {buttons: ["bold", "italic", "color"]});
-        My_Wysiwyg(textarea);
-        My_Wysiwyg(po);
-        console.log("aaaa");
-        //   MyWysiwyg(textarea);
-
-        </script>
+        let mv = new MyWysiwyg(textarea);
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        background-color: blue;
+    }
+    #tedfv {
+        width: 50vw;
+        height: 50vh;
+        margin: 0 auto;
+        background-color: rgb(68, 255, 0);
+    }
+</style>
 <body>
-    <textarea name="ici" id="te">
-
-    </textarea>
-    <button>Click</button>
-    <p id="tedfv" contenteditable="true">
-        ICI ça se passe !
-    </p>
-    <textarea class="po">Ici</textarea>
-
-
-    <p>
-        rpf_oheôùzhrfầeùrhzfed <del>zeprçf_hozepfçoh</del>zeç_yfhgzpei
-
-        <i>erifgoùergfe
-            <p>
-                ùothigùepghieg
-            </p>
-        </i>
-    </p>
+    <div id="tedfv">
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                font-family: Arial, sans-serif;
+                width: 100vw;
+                height: 100vh;
+                margin: 0;
+                padding: 0;
+                background-color: blue;
+            }
+            #tedfv {
+                width: 50vw;
+                height: 50vh;
+                margin: 0 auto;
+                background-color: rgb(68, 255, 0);
+            }
+        </style>
+        <p>salut</p>
+        <p>tu vas <b> bien ?</p>
+        <p>je très mal </b> je vais me tuer :P</p>
+    </div>
 </body>
 </html>
