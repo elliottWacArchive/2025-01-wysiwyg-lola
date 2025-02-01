@@ -51,8 +51,8 @@ class MyWysiwyg {
 // alignement texte <p>
 
     isAlradyStyle(style, noeuds) {
-        console.log(noeuds);
-        console.log(noeuds.length);
+        // console.log(noeuds);
+        // console.log(noeuds.length);
         // for (let i = 0; i < noeuds.length; i++){
             noeuds.forEach(node => {
                 if (node.nodeType === Node.TEXT_NODE) {
@@ -64,9 +64,11 @@ class MyWysiwyg {
                     case "barre":
                         if (node.tagName == ("DEL")) { 
                             console.log("touvé undeur");
+
                             return true;
+                            // break;
+
                         }
-                        break;
                         default:
                             console.log("pas de match");
                             // return false;
