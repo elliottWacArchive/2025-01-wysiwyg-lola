@@ -174,7 +174,7 @@ class MyWysiwyg {
             const parser = new DOMParser();
             const doc = parser.parseFromString(editView, "text/html");
             const parsedHtml = doc.body.innerHTML;
-            this.element.innerHTML = editView;
+            this.element.innerHTML = parsedHtml;
             this.devView = false;
         }
     }
