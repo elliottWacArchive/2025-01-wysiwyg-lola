@@ -118,30 +118,31 @@ class MyWysiwyg {
 
     isAlradyStyle(style, node) {
         console.log(node);
-        // console.log(node.tagName);
         console.log(style);
-        
-        // console.log(noeuds.length);
-        // for (let i = 0; i < noeuds.length; i++){
-        // nodes.forEach(node => {
-            // if (node.nodeType === Node.TEXT_NODE) {
-            //     console.log("Text node:", node.textContent); // VERIFIE SI LE TYPE DU NODE EST UN TEXTE
-            // } 
-            if (node.nodeType === Node.ELEMENT_NODE) {
-                console.log("Element node:", node.tagName); // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
-                if (node.tagName === style) {
-                    // node.remove(); RAJOUTER UNE FONCTION POUR Y EXTRAIRE LE TEXTE
-                    console.log(node);
-                    console.log("Pret à supprimer noeud");
-                    return true; 
-                } else { 
-                    console.log(node.childNodes);
-                    this.isAlradyStyle(style, node.childNodes);
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            console.log("Element node:", node.tagName); // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
+            if (node.tagName === style) {
+                // node.remove(); RAJOUTER UNE FONCTION POUR Y EXTRAIRE LE TEXTE
+                console.log(node);
+                this.deleteStyleText(style, node);
+                console.log("Pret à supprimer noeud");
+                return true; 
+            } else { 
+                console.log(node.childNodes);
+                this.isAlradyStyle(style, node.childNodes);
             } 
-        // })
-            }
+        }
         return false;
-}
+    }
+
+    deleteStyleText(style, node) {
+        let text = node.textContent;
+        console.log(text);
+        let parent = node.parentNode;
+        console.log(parent);
+        let textNode = document.createTextNode(text);
+        parent.replaceChild(textNode, node);
+    }
     // LE RANGECOUNT RENVOIE LE NOMBRE DE SELECTIONS QU'IL Y A SUR LA PAGE GetRangeAt
     // ContainsNode
 
