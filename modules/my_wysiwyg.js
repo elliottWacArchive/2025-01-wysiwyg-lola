@@ -1,48 +1,118 @@
-"use strict";
+class MyWysiwyg {
+    constructor(element, options) {
+        this.element = element;
+        this.options = options;
+        this.initEditor();
+    }
 
-function _typeof(o) {
-  "@babel/helpers - typeof";
+    initEditor() {
+        this.element.contentEditable = true;
+        this.element.style.outline = "none";
+        // this.wrapper = document.createElement("div");
+        // this.wrapper.classList.add("wysiwyg-wrapper");
+        this.toolbar = document.createElement("div");
+        this.toolbar.classList.add("wysiwyg-toolbar");
+        // this.editor = document.createElement("div");
+        // this.editor.classList.add("wysiwyg-editor");
+        // this.editor.contentEditable = true;
+        // this.editor.innerHTML = this.element.value || "";
 
-  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
-    return typeof o;
-  } : function (o) {
-    return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
-  }, _typeof(o);
-}
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.MyWysiwyg = void 0;
-function _defineProperties(e, r) {
-  for (var t = 0; t < r.length; t++) {
-    var o = r[t];
-    o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o);
-  }
-}
-function _createClass(e, r, t) {
-  return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", {
-    writable: !1
-  }), e;
-}
-function _toPropertyKey(t) {
-  var i = _toPrimitive(t, "string");
-  return "symbol" == _typeof(i) ? i : i + "";
-}
-function _toPrimitive(t, r) {
-  if ("object" != _typeof(t) || !t) return t;
-  var e = t[Symbol.toPrimitive];
-  if (void 0 !== e) {
-    var i = e.call(t, r || "default");
-    if ("object" != _typeof(i)) return i;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return ("string" === r ? String : Number)(t);
-}
-function _classCallCheck(a, n) {
-  if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function");
-}
-var MyWysiwyg = exports.MyWysiwyg = /*#__PURE__*/_createClass(function MyWysiwyg(element, options) {
-  _classCallCheck(this, MyWysiwyg);
-  console.log(element);
-  console.log(options);
-});
+        // this.element.style.display = "none";
+        // this.wrapper.appendChild(this.toolbar);
+        // this.wrapper.appendChild(this.editor);
+        // this.element.parentNode.insertBefore(this.wrapper, this.element);
+
+        // this.createButtons();
+        // this.editor.addEventListener("input", () => {
+        //     this.element.value = this.editor.innerHTML;
+        // });
+    }
+
+    createButtons() {
+        this.options.buttons.forEach(button => {
+            let btn = document.createElement("button");
+            btn.textContent = button;
+            btn.addEventListener("click", () => this.applyStyle(button));
+            this.toolbar.appendChild(btn);
+        });
+    }
+
+    getCurrentRange() {
+        let selection = window.getSelection();
+        return selection.rangeCount ? selection.getRangeAt(0) : null;
+    }
+
+    applyStyle(style) {
+        let range = this.getCurrentRange();
+        if (!range || range.collapsed) return;
+
+        let span = document.createElement("span");
+        
+        switch (style) {
+            case "bold":
+                span.style.fontWeight = (range.startContainer.parentNode.style.fontWeight === "bold") ? "normal" : "bold";
+                break;
+            case "italic":
+                span.style.fontStyle = (range.startContainer.parentNode.style.fontStyle === "italic") ? "normal" : "italic";
+                break;
+            case "color":
+                let color = prompt("Entrez une couleur en hex ou nom de couleur:", "red");
+                if (color) span.style.color = color;
+                break;
+        }
+        
+        span.appendChild(range.extractContents());
+        range.deleteContents();
+        range.insertNode(span);
+    }
+};
+
+export { MyWysiwyg };
+
+// document.addEventListener("DOMContentLoaded", function(event) {
+//     var inst = document.getElementById("textarea");
+
+//     console.log(inst);
+//     console.log("AAAAAAAA");
+    
+    
+//     let button = document.querySelector("button");
+//     button.addEventListener("click", () => {
+//   const selection = window.getSelection();
+//   console.log("BB");
+  
+//   const strongElems = document.getElementsByTagName("strong");
+
+//   if (selection.rangeCount > 0) {
+//     selection.removeAllRanges();
+//   }
+
+//   for (const node of strongElems) {
+//     const range = document.createRange();
+//     range.selectNode(node);
+//     selection.addRange(range);
+//   }
+
+//   function getCurrentRange(){
+//     let selection = window.getSelection();
+//     return selection.rangeCount ? selection.getRangeAt(0) : null;
+// };
+
+//     document.addEventListener('click', () => {
+
+//         console.log(getCurrentRange());
+//         console.log("L");
+        
+//     });
+
+// });
+
+// });
+
+    // var inst = document.getElementById("textarea");
+    
+
+
+// let mw = new MyWysiwyg(inst, {
+//     buttons: ["bold", "italic", "color"]
+// });
