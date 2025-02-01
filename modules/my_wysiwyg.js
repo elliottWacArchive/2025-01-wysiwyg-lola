@@ -64,10 +64,10 @@ class MyWysiwyg {
         if (selection.rangeCount > 0) {
             for (let i = 0; i < selection.rangeCount; i++) {
                 const range = selection.getRangeAt(i);
-                let node = range.startContainer.parentElement;
-                console.log(node);
+                // let node = range.startContainer.parentElement;
+                // console.log(node);
                 let all = range.cloneContents();
-                console.log(all);
+                // console.log(all);
                 console.log(this.isAlradyStyle(style, node));                 
                 if (this.isAlradyStyle(style, all.childNodes)) {
                     console.log("trouvé " + style)
@@ -78,7 +78,8 @@ class MyWysiwyg {
                     
                     console.log(all); // FAIRE EN SORTE QUE ÇA SUPPRIME LA BALISE STYLE À L'INTERIEUR DE LA BALISE
                 } else {
-                    this.applyStyle(style, node);
+                    console.log(range);
+                    this.applyStyle(style, range);
                 }
             }
         } else {
@@ -131,18 +132,10 @@ class MyWysiwyg {
         return paragraph.querySelector('span[style*="color"]') !== null;
     }
 
-    applyStyle(style, selec) {
-
-        console.log(selec);
-        console.log(style);
-        
-        let span = document.createElement("span");
-        
-
-        
-        // span.appendChild(range.extractContents());
-        // range.deleteContents();
-        // range.insertNode(span);
+    applyStyle(style, noeuds) {
+        let object = document.createElement(style);
+        object.appendChild(noeuds.extractContents());
+        noeuds.insertNode(object);
     }
 
     // BONUS
