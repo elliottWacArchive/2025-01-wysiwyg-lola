@@ -1,17 +1,18 @@
 class MyWysiwyg {
-    constructor(element, options) {
+    constructor(element, options = {buttons: ["bold", "italic", "color"]}) {
         this.element = element;
         this.options = options;
+        console.log(this.element);
+        console.log(this.options);
         this.initEditor();
     }
 
     initEditor() {
         this.element.contentEditable = true;
         this.element.style.outline = "none";
-        // this.wrapper = document.createElement("div");
-        // this.wrapper.classList.add("wysiwyg-wrapper");
         this.toolbar = document.createElement("div");
         this.toolbar.classList.add("wysiwyg-toolbar");
+        this.element.parentNode.insertBefore(this.toolbar, this.element);
         // this.editor = document.createElement("div");
         // this.editor.classList.add("wysiwyg-editor");
         // this.editor.contentEditable = true;
@@ -22,7 +23,7 @@ class MyWysiwyg {
         // this.wrapper.appendChild(this.editor);
         // this.element.parentNode.insertBefore(this.wrapper, this.element);
 
-        // this.createButtons();
+        this.createButtons();
         // this.editor.addEventListener("input", () => {
         //     this.element.value = this.editor.innerHTML;
         // });
@@ -32,10 +33,37 @@ class MyWysiwyg {
         this.options.buttons.forEach(button => {
             let btn = document.createElement("button");
             btn.textContent = button;
-            btn.addEventListener("click", () => this.applyStyle(button));
+            btn.addEventListener("click", () => {
+                const selection = window.getSelection();
+                console.log(selection.anchorOffset + ':' + selection.focusOffset);
+                console.log(selection.anchorNode + ':' + selection.focusNode);
+                // this.setStyle();
+                // let parentP = selection.getRangeAt(0).commonAncestorContainer;
+                // while (parentP && parentP.nodeName !== "P") {
+                // }
+            
+                // console.log(parentP);
+            });
+            
             this.toolbar.appendChild(btn);
         });
     }
+
+    setStyle() {
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            for (let i = 0; i < selection.rangeCount; i++) {
+                    const range = selection.getRangeAt(i);
+                    const span = document.createElement("span");
+                    span.style.color = "red";
+                    span.appendChild(range.extractContents());
+                    range.insertNode(span);
+            }
+        }
+    }
+
+    // LE RANGECOUNT RENVOIE LE NOMBRE DE SELECTIONS QU'IL Y A SUR LA PAGE GetRangeAt
+    // ContainsNode
 
     getCurrentRange() {
         let selection = window.getSelection();

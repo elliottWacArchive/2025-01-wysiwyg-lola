@@ -4,16 +4,8 @@
     <script type="module">
         import {MyWysiwyg} from "./modules/my_wysiwyg.js";
         let textarea = document.getElementById('tedfv');
-        let mv = new MyWysiwyg(textarea, {buttons: ["bold", "italic", "color"]});
+        let mv = new MyWysiwyg(textarea, {buttons: ["cc", "cv", "tfk"]});
         console.log("mission réussie.");
-        document.addEventListener('selectionchange', function() {
-            const selection = window.getSelection();
-            let element = selection.anchorNode.parentElement;
-            while (element && element.id !== 'tedfv') {
-                console.log(element.innerHTML);
-                element = element.parentElement;
-            }
-        });
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,8 +34,8 @@
 <body>
     <div id="tedfv">
         <p>salut</p>
-        <p>tu vas bien ?</p>
-        <p>je <b>vais</b> très mal je vais me tuer</p>
+        <p>tu vas <b> bien ?</p>
+        <p>je très mal </b> je vais me tuer :P</p>
     </div>
 </body>
 </html>
