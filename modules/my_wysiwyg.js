@@ -76,12 +76,21 @@ class MyWysiwyg {
 
                 if (this.isAlradyStyle(style, node)) {
                     let node = range.startContainer.parentNode;
-                    let all = range.cloneContents();
+                    // let all = range.cloneContents();
+                    let pnode = node.parentElement;
+                    console.log(pnode);
+                    
                     console.log("AAAAAAAA");
                     console.log("trouvé " + style)
                     console.log(node);
                     console.log(all); // FAIRE EN SORTE QUE ÇA SUPPRIME LA BALISE STYLE À L'INTERIEUR DE LA BALISE
-                    
+                    let buf = range.extractContents();
+                    pnode.normalize();
+                    node.remove();
+                    console.log(node);
+                    pnode.innerHTML = buf.textContent;
+                    // node.remove()
+                    // node.innerHTML = buf;
                 } else {
                     console.log(range);
                     this.applyStyle(style, range);
@@ -90,18 +99,12 @@ class MyWysiwyg {
         } else {
             console.log("Aucun texte selectionné");
         }
-        // const selection = window.getSelection();
-        // if (selection.rangeCount > 0) {
-        //     for (let i = 0; i < selection.rangeCount; i++) {
-        //         this.applyStyle(style, i); // A CHANGER
-        //     }
-        // }
     }
 
     isAlradyStyle(style, node) {
         console.log(node);
         // console.log(node.tagName);
-        console.log(style);
+        // console.log(style);
         
         // console.log(noeuds.length);
         // for (let i = 0; i < noeuds.length; i++){
@@ -109,13 +112,12 @@ class MyWysiwyg {
             // if (node.nodeType === Node.TEXT_NODE) {
             //     console.log("Text node:", node.textContent); // VERIFIE SI LE TYPE DU NODE EST UN TEXTE
             // } 
-            if (node.nodeType === Node.ELEMENT_NODE) {
+            if (node.nodeType === Node.ELEMENT_NODE || (node.nodeType === Node.TEXT_NODE)) {
                 console.log("Element node:", node.tagName); // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
                 if (node.tagName === style) {
                     // node.remove(); RAJOUTER UNE FONCTION POUR Y EXTRAIRE LE TEXTE
                     console.log(node);
                     console.log("Pret à supprimer noeud");
-                    
                     return true; 
                 } else { 
                     console.log(node.childNodes);
