@@ -33,7 +33,7 @@ class MyWysiwyg {
                 let button = e.target.textContent;
                 switch (button) {
                     case "bold":
-                        // const selection = window.getSelection();
+                        // const selection = windsetStyleow.getSelection();
                         // console.log(selection);
                         this.setStyle("B");
                         break;
