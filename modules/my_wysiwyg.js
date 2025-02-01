@@ -72,8 +72,6 @@ class MyWysiwyg {
     
     
 
-    document.addEventListener
-
     applyStyle(style) {
         let range = this.getCurrentRange();
         if (!range || range.collapsed) return;
