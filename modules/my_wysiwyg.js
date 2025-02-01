@@ -54,9 +54,13 @@ class MyWysiwyg {
         });
     }
 
+    changeStyle(elem) {
+
+    }
     // SECURISE LE MULTI SELECTION DE MOZILLA, A CALL AVEC TT LES BOUTONS DE STYLE
     setStyle(style) {
         const selection = window.getSelection();
+        console.log(selection);
         if (selection.rangeCount > 0) {
             for (let i = 0; i < selection.rangeCount; i++) {
                 const range = selection.getRangeAt(i);
@@ -64,14 +68,17 @@ class MyWysiwyg {
                 console.log(node);
                 let all = range.cloneContents();
                 console.log(all);
+                console.log(this.isAlradyStyle(style, node));                 
                 if (this.isAlradyStyle(style, all.childNodes)) {
                     console.log("trouvé " + style)
                     let node = range.startContainer.parentNode;
                     console.log(node);
                     let all = range.cloneContents();
+                    console.log("AAAAAAAA");
+                    
                     console.log(all); // FAIRE EN SORTE QUE ÇA SUPPRIME LA BALISE STYLE À L'INTERIEUR DE LA BALISE
                 } else {
-                    this.applyStyle(style, i);
+                    this.applyStyle(style, node);
                 }
             }
         } else {
@@ -85,11 +92,11 @@ class MyWysiwyg {
         // }
     }
 
-    isAlradyStyle(style, noeuds) {
-        console.log(noeuds);
+    isAlradyStyle(style, node) {
+        console.log(node);
         // console.log(noeuds.length);
         // for (let i = 0; i < noeuds.length; i++){
-        noeuds.forEach(node => {
+        // noeuds.forEach(node => {
             if (node.nodeType === Node.TEXT_NODE) {
                 console.log("Text node:", node.textContent); // VERIFIE SI LE TYPE DU NODE EST UN TEXTE
             } else if (node.nodeType === Node.ELEMENT_NODE) {
@@ -101,7 +108,7 @@ class MyWysiwyg {
                 else { this.isAlradyStyle(style, node.childNodes); }
             }
             return false;
-        });
+        // });
     }
     // LE RANGECOUNT RENVOIE LE NOMBRE DE SELECTIONS QU'IL Y A SUR LA PAGE GetRangeAt
     // ContainsNode
@@ -124,15 +131,18 @@ class MyWysiwyg {
         return paragraph.querySelector('span[style*="color"]') !== null;
     }
 
-    applyStyle(style, noeuds) {
+    applyStyle(style, selec) {
 
+        console.log(selec);
+        console.log(style);
+        
         let span = document.createElement("span");
         
 
         
-        span.appendChild(range.extractContents());
-        range.deleteContents();
-        range.insertNode(span);
+        // span.appendChild(range.extractContents());
+        // range.deleteContents();
+        // range.insertNode(span);
     }
 
     // BONUS
