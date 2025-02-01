@@ -2,8 +2,6 @@ class MyWysiwyg {
     constructor(element, options = {buttons: ["bold", "italic", "color"]}) {
         this.element = element;
         this.options = options;
-        // console.log(this.element);
-        // console.log(this.options);
         this.initEditor();
         this.devView = false;
     }
