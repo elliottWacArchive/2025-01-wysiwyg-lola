@@ -2,8 +2,8 @@ class MyWysiwyg {
     constructor(element, options = {buttons: ["bold", "italic", "color"]}) {
         this.element = element;
         this.options = options;
-        console.log(this.element);
-        console.log(this.options);
+        // console.log(this.element);
+        // console.log(this.options);
         this.initEditor();
         this.devView = false;
     }
@@ -21,64 +21,6 @@ class MyWysiwyg {
         this.options.buttons.forEach(button => {
             let btn = document.createElement("button");
             btn.textContent = button;
-            // btn.addEventListener("click", () => {
-            //     const selection = window.getSelection();
-            //     console.log(selection.anchorOffset + ':' + selection.focusOffset);
-            //     console.log(selection.anchorNode + ':' + selection.focusNode);
-            //     const range = selection.getRangeAt(0);
-            //     const allParagraphs = document.querySelectorAll("p");
-            //     console.log(allParagraphs);
-            //     let parentP = range.commonAncestorContainer;
-            //     while (parentP && parentP.nodeName !== "P") {
-            //         parentP = parentP.parentNode;
-            //     }
-            //     if (!parentP) return;
-            //     const paragraphIndex = Array.from(allParagraphs).indexOf(parentP);
-            //     console.log("Numéro du <p> sélectionné :", paragraphIndex);
-            // });
-            // btn.addEventListener("click", () => {
-            //     const selection = window.getSelection();
-            //     if (!selection.rangeCount) return;
-            //     console.log(selection);
-            //     const range = selection.getRangeAt(0);
-            //     const allParagraphs = Array.from(document.querySelectorAll("p"));
-            
-            //     // cherche tt les p
-            //     let startP = range.startContainer;
-            //     let endP = range.endContainer;
-            
-            //     while (startP && startP.nodeName !== "P") startP = startP.parentNode;
-            //     while (endP && endP.nodeName !== "P") endP = endP.parentNode;
-            
-            //     if (!startP || !endP) return "Pas de <p> trouvé";
-            
-            //     // recup l'index du p
-            //     const startIndex = allParagraphs.indexOf(startP);
-            //     const endIndex = allParagraphs.indexOf(endP);
-            
-            //     console.log("Paragraphes sélectionnés :", { startIndex, endIndex });
-            // });
-            // btn.addEventListener("click", () => {
-            //     const selection = window.getSelection();
-            //     if (!selection.rangeCount) return;
-            //     console.log(selection);
-            //     const range = selection.getRangeAt(0);
-            //     const selectedHtml = range.cloneContents();
-            //     const div = document.createElement("div");
-            //     div.appendChild(selectedHtml);
-            //     console.log(div.innerHTML);
-            // });
-            // btn.addEventListener("click", () => {
-            //     const selection = window.getSelection();
-            //     if (!selection.rangeCount) return;
-            
-            //     const range = selection.getRangeAt(0);
-            //     const fragment = range.cloneContents();
-                
-            //     const html = Array.from(fragment.childNodes).map(node => node.outerHTML || node.textContent).join("");
-                
-            //     console.log(html);
-            // });
             this.toolbar.appendChild(btn);
         });
         this.checkButtons();
@@ -91,13 +33,18 @@ class MyWysiwyg {
                 let button = e.target.textContent;
                 switch (button) {
                     case "bold":
-                        this.setStyle("bold");
+                        // const selection = window.getSelection();
+                        // console.log(selection);
+                        this.setStyle("B");
                         break;
                     case "italic":
-                        this.setStyle("italic");
+                        this.setStyle("I");
                         break;
                     case "color":
-                        this.setStyle("color");
+                        this.setStyle("span"); // A CHANGER
+                        break;
+                    case "del":
+                        this.setStyle("DEL");
                         break;
                     case "dev-mode":
                         this.devMode();
@@ -113,11 +60,22 @@ class MyWysiwyg {
         if (selection.rangeCount > 0) {
             for (let i = 0; i < selection.rangeCount; i++) {
                 const range = selection.getRangeAt(i);
-                let node = range.startContainer.parentNode;
+                let node = range.startContainer.parentElement;
                 console.log(node);
                 let all = range.cloneContents();
                 console.log(all);
+                if (this.isAlradyStyle(style, all.childNodes)) {
+                    console.log("trouvé " + style)
+                    let node = range.startContainer.parentNode;
+                    console.log(node);
+                    let all = range.cloneContents();
+                    console.log(all); // FAIRE EN SORTE QUE ÇA SUPPRIME LA BALISE STYLE À L'INTERIEUR DE LA BALISE
+                } else {
+                    this.applyStyle(style, i);
+                }
             }
+        } else {
+            console.log("Aucun texte selectionné");
         }
         // const selection = window.getSelection();
         // if (selection.rangeCount > 0) {
@@ -127,13 +85,31 @@ class MyWysiwyg {
         // }
     }
 
+    isAlradyStyle(style, noeuds) {
+        console.log(noeuds);
+        // console.log(noeuds.length);
+        // for (let i = 0; i < noeuds.length; i++){
+        noeuds.forEach(node => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                console.log("Text node:", node.textContent); // VERIFIE SI LE TYPE DU NODE EST UN TEXTE
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+                console.log("Element node:", node.tagName); // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
+                if (node.tagName === style) {
+                    // node.remove(); RAJOUTER UNE FONCTION POUR Y EXTRAIRE LE TEXTE
+                    return true; 
+                }
+                else { this.isAlradyStyle(style, node.childNodes); }
+            }
+            return false;
+        });
+    }
     // LE RANGECOUNT RENVOIE LE NOMBRE DE SELECTIONS QU'IL Y A SUR LA PAGE GetRangeAt
     // ContainsNode
 
-    getCurrentRange() {
-        let selection = window.getSelection();
-        return selection.rangeCount ? selection.getRangeAt(0) : null;
-    }
+    // getCurrentRange() {
+    //     let selection = window.getSelection();
+    //     return selection.rangeCount ? selection.getRangeAt(0) : null;
+    // }
 
     // ÇA PEUT VOUS AIDER A GERER LES PRESENCES DANS LES PARAGRAPHES
     containsBoldText(paragraph) {
@@ -148,24 +124,11 @@ class MyWysiwyg {
         return paragraph.querySelector('span[style*="color"]') !== null;
     }
 
-    applyStyle(style, i) {
-        let range = this.getCurrentRange();
-        if (!range || range.collapsed) return;
+    applyStyle(style, noeuds) {
 
         let span = document.createElement("span");
         
-        switch (style) {
-            case "bold":
-                span.style.fontWeight = (range.startContainer.parentNode.style.fontWeight === "bold") ? "normal" : "bold";
-                break;
-            case "italic":
-                span.style.fontStyle = (range.startContainer.parentNode.style.fontStyle === "italic") ? "normal" : "italic";
-                break;
-            case "color":
-                let color = prompt("Entrez une couleur en hex ou nom de couleur:", "red");
-                if (color) span.style.color = color;
-                break;
-        }
+
         
         span.appendChild(range.extractContents());
         range.deleteContents();
