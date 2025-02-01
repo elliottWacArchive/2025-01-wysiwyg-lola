@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="module">
+        let po = document.getElementsByClassName('po')[0];
+        console.log(po);
+        
+        import {MyWysiwyg, My_Wysiwyg} from "./script_code_antho.js";
+        let textarea = document.getElementById('tedfv');
+        let mv = new MyWysiwyg(textarea, {buttons: ["bold", "italic", "color"]});
+        My_Wysiwyg(textarea);
+        My_Wysiwyg(po);
+        console.log("aaaa");
+        //   MyWysiwyg(textarea);
+
+        </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <textarea name="ici" id="te">
+
+    </textarea>
+    <button>Click</button>
+    <p id="tedfv" contenteditable="true">
+        ICI ça se passe !
+    </p>
+    <textarea class="po">Ici</textarea>
+</body>
+</html>
