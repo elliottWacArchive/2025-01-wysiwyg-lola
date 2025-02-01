@@ -13,6 +13,32 @@ class MyWysiwyg {
         this.toolbar.classList.add("wysiwyg-toolbar");
         this.element.parentNode.insertBefore(this.toolbar, this.element);
         this.createButtons();
+        this.element.addEventListener('keydown', (event) => {
+            let selection = window.getSelection();
+            let range = selection.getRangeAt(0);
+            let parent = range.commonAncestorContainer;
+        
+            if (parent.nodeType === 3) parent = parent.parentNode;
+            
+            if (parent.id === this.element.id) {
+                console.log('parent est le parent lol');
+                if (event.key.length === 1 || event.key === "Enter") {
+                    console.log(event.key);
+                    event.preventDefault();
+        
+                    let newP = document.createElement("p");
+                    let txt = document.createTextNode(event.key === "Enter" ? "" : event.key);
+                    newP.appendChild(txt);
+                    parent.appendChild(newP);
+        
+                    let newRange = document.createRange();
+                    newRange.setStart(newP, 0);
+                    newRange.setEnd(newP, 0);
+                    selection.removeAllRanges();
+                    selection.addRange(newRange);
+                }
+            }
+        });
     }
 
     createButtons() {
@@ -48,10 +74,6 @@ class MyWysiwyg {
                 }
             }
         });
-    }
-
-    changeStyle(elem) {
-
     }
 
     // SECURISE LE MULTI SELECTION DE MOZILLA, A CALL AVEC TT LES BOUTONS DE STYLE
@@ -111,7 +133,6 @@ class MyWysiwyg {
                     // node.remove(); RAJOUTER UNE FONCTION POUR Y EXTRAIRE LE TEXTE
                     console.log(node);
                     console.log("Pret à supprimer noeud");
-                    
                     return true; 
                 } else { 
                     console.log(node.childNodes);
@@ -129,22 +150,7 @@ class MyWysiwyg {
     //     return selection.rangeCount ? selection.getRangeAt(0) : null;
     // }
 
-    // ÇA PEUT VOUS AIDER A GERER LES PRESENCES DANS LES PARAGRAPHES
-    containsBoldText(paragraph) {
-        return paragraph.querySelector('b, strong') !== null;
-    }
-
-    containsItalicText(paragraph) {
-        return paragraph.querySelector('i, em') !== null;
-    }
-
-    containsColoredText(paragraph) {
-        return paragraph.querySelector('span[style*="color"]') !== null;
-    }
-
-    applyStyle(style, noeuds) {
-        console.log(noeuds);
-        
+    applyStyle(style, noeuds) {        
         let object = document.createElement(style);
         object.appendChild(noeuds.extractContents());
         noeuds.insertNode(object);
