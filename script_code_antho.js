@@ -1,6 +1,6 @@
 export function My_Wysiwyg($a) {
     return new MyWysiwyg($a, {
-        buttons: ["bold", "italic", "color"]
+        buttons: ["bold", "italic", "color", "barre"]
     });
 }
 
@@ -46,77 +46,113 @@ class MyWysiwyg {
         return selection.rangeCount ? selection.getRangeAt(0) : null;
     }
 
-    applyStyle(style) {
-        let range = this.getCurrentRange();
+// IS alrady in style soit matching balise <b> <i> <dell> <span color get picker> <span font size> 
+//  balise lien <a href:"GET"> <span style text-decoration:underline><span>
+// alignement texte <p>
+
+    isAlradyStyle(style, noeuds) {
+        console.log(noeuds);
+        console.log(noeuds.length);
+        // for (let i = 0; i < noeuds.length; i++){
+            noeuds.forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    console.log("Text node:", node.textContent);
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    console.log("Element node:", node.tagName); // Example: DEL
+                }
+                switch(style) {
+                    case "barre":
+                        if (node.tagName == ("DEL")) { 
+                            console.log("touvé undeur");
+                            return true;
+                        }
+                        break;
+                        default:
+                            console.log("pas de match");
+                            // return false;
+                            break;
+                        }
+            });
+            
+    }
+
+   setStyle() {
+    const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            for (let i = 0; i < selection.rangeCount; i++) {
+                    const range = selection.getRangeAt(i);
+                    console.log(range);
+                    let no = range.startContainer.parentElement;
+                    console.log(no);
+                    let all = range.cloneContents();
+                    console.log(all);
+                    
+                    if (this.isAlradyStyle("barre", all.childNodes)) {
+                        let node = range.startContainer.parentNode;
+                        console.log(node);
+                        let all = range.cloneContents();
+                        console.log(all);
+                    };
+            }
+        }
+    }
+
+    
+    
+
+applyStyle(style) {
+    let range = this.getCurrentRange();
         if (!range || range.collapsed) return;
 
-        let span = document.createElement("span");
-        
+        let array_style = [, "italic", "color"];
+        let span = null;
+        let dell = null;
+        if (array_style.includes(style)) {
+            span = document.createElement("span");
+        } else if (style === "barre") {
+            dell = document.createElement("del");
+        } else if (style == "bold") {
+
+        }
         switch (style) {
             case "bold":
-                span.style.fontWeight = (range.startContainer.parentNode.style.fontWeight === "bold") ? "normal" : "bold";
+                
+                let node = range.startContainer.parentNode;
+                console.log(node);
+                let all = range.extractContents();
+                console.log(all);
+                
+                // span.style.fontWeight = (range.startContainer.parentNode.style.fontWeight === "bold") ? "normal" : "bold";
                 break;
             case "italic":
-                span.style.fontStyle = (range.startContainer.parentNode.style.fontStyle === "italic") ? "normal" : "italic";
+                // span.style.fontStyle = (range.startContainer.parentNode.style.fontStyle === "italic") ? "normal" : "italic";
+                this.setStyle();
                 break;
             case "color":
                 let color = prompt("Entrez une couleur en hex ou nom de couleur:", "red");
                 if (color) span.style.color = color;
                 break;
+            case "barre":
+                //dell = document.createElement("del");
+                this.element.appendChild(dell);
+                console.log('barr');
+                break;
         }
-        
-        span.appendChild(range.extractContents());
-        range.deleteContents();
-        range.insertNode(span);
+        if (array_style.includes(style)) {
+            span.appendChild(range.extractContents());
+            range.deleteContents();
+            range.insertNode(span);
+        } else if (style === "barre") {
+            dell.appendChild(range.extractContents());
+            range.deleteContents();
+            range.insertNode(dell);
+            let cook = range.startContainer.parentNode;
+            console.log(cook);
+            
+        }
+
+        // range.insertNode(span);
     }
 };
 
 export { MyWysiwyg };
-
-// document.addEventListener("DOMContentLoaded", function(event) {
-//     var inst = document.getElementById("textarea");
-
-//     console.log(inst);
-//     console.log("AAAAAAAA");
-    
-    
-//     let button = document.querySelector("button");
-//     button.addEventListener("click", () => {
-//   const selection = window.getSelection();
-//   console.log("BB");
-  
-//   const strongElems = document.getElementsByTagName("strong");
-
-//   if (selection.rangeCount > 0) {
-//     selection.removeAllRanges();
-//   }
-
-//   for (const node of strongElems) {
-//     const range = document.createRange();
-//     range.selectNode(node);
-//     selection.addRange(range);
-//   }
-
-//   function getCurrentRange(){
-//     let selection = window.getSelection();
-//     return selection.rangeCount ? selection.getRangeAt(0) : null;
-// };
-
-//     document.addEventListener('click', () => {
-
-//         console.log(getCurrentRange());
-//         console.log("L");
-        
-//     });
-
-// });
-
-// });
-
-    // var inst = document.getElementById("textarea");
-    
-
-
-// let mw = new MyWysiwyg(inst, {
-//     buttons: ["bold", "italic", "color"]
-// });
