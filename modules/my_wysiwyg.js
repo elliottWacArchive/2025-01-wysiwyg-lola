@@ -112,9 +112,19 @@ class MyWysiwyg {
         const selection = window.getSelection();
         if (selection.rangeCount > 0) {
             for (let i = 0; i < selection.rangeCount; i++) {
-                this.applyStyle(style, i);
+                const range = selection.getRangeAt(i);
+                let node = range.startContainer.parentNode;
+                console.log(node);
+                let all = range.cloneContents();
+                console.log(all);
             }
         }
+        // const selection = window.getSelection();
+        // if (selection.rangeCount > 0) {
+        //     for (let i = 0; i < selection.rangeCount; i++) {
+        //         this.applyStyle(style, i); // A CHANGER
+        //     }
+        // }
     }
 
     // LE RANGECOUNT RENVOIE LE NOMBRE DE SELECTIONS QU'IL Y A SUR LA PAGE GetRangeAt
