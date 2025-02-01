@@ -21,7 +21,3 @@
 
 import { MyWysiwyg } from './modules/my_wysiwyg.js';
 let mw = new MyWysiwyg(document.getElementById('textarea'), {buttons:["bold", "italic", "color"]});
-let caca2 = {20 : "cc", ccc : 9, ddd : 10, ooo : 20};
-console.log(caca2["20"]);
-console.log("1" + "4");
-console.log("1" - "44");
