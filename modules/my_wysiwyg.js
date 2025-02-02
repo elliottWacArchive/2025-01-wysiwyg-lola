@@ -1,18 +1,29 @@
 class MyWysiwyg {
-    constructor(element, options = {buttons: ["bold", "italic", "del", "dev-mode", "color", "font-size"]}) {
+    constructor(element, options = {buttons: ["bold", "italic", "del"], disable_buttons , skyn: ["default-theme"], localStorageAutoSave: false}) {
         this.element = element;
         this.options = options;
-        this.initEditor();
         this.devView = false;
+        this.skyn = this.options.skyn;
+        this.initEditor();
+        console.log(this.skyn);
     }
 
     initEditor() {
+        this.skyn = this.skyn[0];
+        document.head.innerHTML += "<link rel='stylesheet' href='./modules/style/" + this.skyn + "/style.css'>";
+        this.element.classList.add("wysiwyg-editor");
         this.element.contentEditable = true;
         this.element.style.outline = "none";
         this.toolbar = document.createElement("div");
         this.toolbar.classList.add("wysiwyg-toolbar");
         this.element.parentNode.insertBefore(this.toolbar, this.element);
         this.createButtons();
+        this.toolbar.innerHTML += "<button id='save'>save</button>";
+        if (localStorage.getItem("wysiwyg")) {
+            this.element.innerHTML += localStorage.getItem("wysiwyg");
+        } else {
+            this.element.innerHTML += "<p>Anthonin</p><p>Lola</p><p>et Elliott</p><p><b>Sont un super Trio!!!</b></p>"
+        }
         this.element.addEventListener('keydown', (event) => {
             if (this.devView == false) {
                 let selection = window.getSelection();
@@ -44,8 +55,24 @@ class MyWysiwyg {
         });
     }
 
+    setLocalStorage(localStorageAutoSave = false) {
+        if (localStorageAutoSave) {
+            setInterval(() => {
+                localStorage.setItem("wysiwyg", this.element.innerHTML);
+            }, localStorageAutoSave * 60000); // Convert minutes to milliseconds
+        }
+        this.toolbar.addEventListener("click", (e) => {
+            if (e.target.id === "save") {
+                localStorage.setItem("wysiwyg", this.element.innerHTML);
+                alert("Saved");
+            }
+        });
+    }
+
     createButtons() {
-        this.options.buttons.forEach(button => {
+        if (this.options.buttons) {
+            this.options.buttons = this.options.buttons.filter(button => !this.options.disable_buttons.includes(button));
+            this.options.buttons.forEach(button => {
             let btn = document.createElement("button");
             btn.textContent = button;
             this.toolbar.appendChild(btn);
@@ -58,6 +85,7 @@ class MyWysiwyg {
             }
         });
         this.checkButtons();
+        }
     }
 
     // AJOUTER UN BOUTON A LA LISTE POUR QU'IL SOIT PRIS EN COMPTE

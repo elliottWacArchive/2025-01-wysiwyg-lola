@@ -2,100 +2,15 @@
 <html lang="en">
 <head>
     <script type="module">
-        import {MyWysiwyg} from "./modules/my_wysiwyg.js";
-        let textarea = document.getElementById('tedfv');
-        let mv = new MyWysiwyg(textarea);
+        import { MyWysiwyg } from "./modules/my_wysiwyg.js";
+        let mv = new MyWysiwyg(document.getElementById('textarea'), {disable_buttons: ["italic", "del"], localStorageAutoSave: 1});
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<style>
-    :root {
-        --color1: red;
-        --color2: black;
-        --color3: yellow;
-    }
-    body {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        font-family: Arial, sans-serif;
-        width: 100vw;
-        height: 100vh;
-        margin: 0;
-        padding: 0;
-        }
-
-    .wysiwyg-toolbar {
-        background-color: var(--color1);
-        width: 820px;
-        display: flex;
-        justify-content: space-around;
-    }
-
-    button:hover {
-        background-color: red;
-        color: black;
-    }
-
-    #tedfv {
-        color: red;
-        width: 800px;
-        height: 400px;
-        margin: 0 auto;
-        overflow-y: scroll;
-        border: 1px solid red;
-        background-color: var(--color2);
-    }
-
-    input {
-        background-color: black;
-        outline: none;
-        border: 1px red solid;
-        color: red;
-    }
-    
-    input::placeholder {
-        color: red;
-        opacity: 0.7;
-    }
-
-    button {
-        background-color: black;
-        border: 1px red solid;
-        color: red;
-        outline: none;
-    }
-
-        /* width */
-    ::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    /* Track */
-    ::-webkit-scrollbar-track {
-        background: none;
-    }
-
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-        background: red;
-    }
-
-    /* Firefox */
-    * {
-        scrollbar-width: thin;
-        scrollbar-color: red transparent;
-    }
-</style>
 <body>
-    <div id="tedfv">
-        <p>Anthonin</p>
-        <p>Lola</p>
-        <p>et Elliott</p>
-        <p><b>Sont un super Trio!!!</b></p>
+    <div id="textarea">
     </div>
 </body>
 </html>
