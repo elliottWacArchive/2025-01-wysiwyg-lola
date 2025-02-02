@@ -1,5 +1,5 @@
 class MyWysiwyg {
-    constructor(element, options = {buttons: ["bold", "italic", "color"]}) {
+    constructor(element, options = {buttons: ["bold", "italic", "color", "del", "dev-mode"]}) {
         this.element = element;
         this.options = options;
         this.initEditor();
@@ -17,17 +17,18 @@ class MyWysiwyg {
             let selection = window.getSelection();
             let range = selection.getRangeAt(0);
             let parent = range.commonAncestorContainer;
-        
             if (parent.nodeType === 3) parent = parent.parentNode;
             
             if (parent.id === this.element.id) {
-                console.log('parent est le parent lol');
                 if (event.key.length === 1 || event.key === "Enter") {
-                    console.log(event.key);
+                        let key = event.key;
+                    if (event.key === "Enter" || event.key === " ") {
+                        key = "\u00a0";
+                    } 
                     event.preventDefault();
         
                     let newP = document.createElement("p");
-                    let txt = document.createTextNode(event.key === "Enter" ? "" : event.key);
+                    let txt = document.createTextNode(event.key === "Enter" ? "\u00a0" : key);
                     newP.appendChild(txt);
                     parent.appendChild(newP);
         
@@ -36,7 +37,7 @@ class MyWysiwyg {
                     newRange.setEnd(newP, 0);
                     selection.removeAllRanges();
                     selection.addRange(newRange);
-                }
+                } 
             }
         });
     }
