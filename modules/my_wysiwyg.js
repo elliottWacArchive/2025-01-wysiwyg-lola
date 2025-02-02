@@ -2,8 +2,6 @@ class MyWysiwyg {
     constructor(element, options = {buttons: ["bold", "italic", "color"]}) {
         this.element = element;
         this.options = options;
-        // console.log(this.element);
-        // console.log(this.options);
         this.initEditor();
         this.devView = false;
     }
@@ -33,8 +31,6 @@ class MyWysiwyg {
                 let button = e.target.textContent;
                 switch (button) {
                     case "bold":
-                        // const selection = windsetStyleow.getSelection();
-                        // console.log(selection);
                         this.setStyle("B");
                         break;
                     case "italic":
@@ -57,42 +53,22 @@ class MyWysiwyg {
     changeStyle(elem) {
 
     }
+
     // SECURISE LE MULTI SELECTION DE MOZILLA, A CALL AVEC TT LES BOUTONS DE STYLE
     setStyle(style) {
         const selection = window.getSelection();
-        console.log(selection);
         if (selection.rangeCount > 0) {
             for (let i = 0; i < selection.rangeCount; i++) {
                 const range = selection.getRangeAt(i);
                 let node = range.startContainer.parentElement;
-                console.log(range);
-                let all = range.cloneContents();
-                // console.log(all);
-                console.log(node);
-                console.log(this.isAlradyStyle(style, node));
-                console.log("ICI recherche noeud de style");
-                
-                console.log(all.childNodes);
-
                 if (this.isAlradyStyle(style, node)) {
                     let node = range.startContainer.parentNode;
-                    // let all = range.cloneContents();
                     let pnode = node.parentElement;
-                    console.log(pnode);
-                    
-                    console.log("AAAAAAAA");
-                    console.log("trouvé " + style)
-                    console.log(node);
-                    console.log(all); // FAIRE EN SORTE QUE ÇA SUPPRIME LA BALISE STYLE À L'INTERIEUR DE LA BALISE
                     let buf = range.extractContents();
                     pnode.normalize();
                     node.remove();
-                    console.log(node);
                     pnode.innerHTML = buf.textContent;
-                    // node.remove()
-                    // node.innerHTML = buf;
                 } else {
-                    console.log(range);
                     this.applyStyle(style, range);
                 }
             }
@@ -102,39 +78,17 @@ class MyWysiwyg {
     }
 
     isAlradyStyle(style, node) {
-        console.log(node);
-        // console.log(node.tagName);
-        // console.log(style);
-        
-        // console.log(noeuds.length);
-        // for (let i = 0; i < noeuds.length; i++){
-        // nodes.forEach(node => {
-            // if (node.nodeType === Node.TEXT_NODE) {
-            //     console.log("Text node:", node.textContent); // VERIFIE SI LE TYPE DU NODE EST UN TEXTE
-            // } 
-            if (node.nodeType === Node.ELEMENT_NODE || (node.nodeType === Node.TEXT_NODE)) {
-                console.log("Element node:", node.tagName); // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
+        if ((node.nodeType === Node.ELEMENT_NODE) || (node.nodeType === Node.TEXT_NODE)) {
+// VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
                 if (node.tagName === style) {
-                    // node.remove(); RAJOUTER UNE FONCTION POUR Y EXTRAIRE LE TEXTE
-                    console.log(node);
-                    console.log("Pret à supprimer noeud");
                     return true; 
                 } else { 
-                    console.log(node.childNodes);
                     this.isAlradyStyle(style, node.childNodes);
             } 
-        // })
-            }
+        }
         return false;
-}
+    }
     // LE RANGECOUNT RENVOIE LE NOMBRE DE SELECTIONS QU'IL Y A SUR LA PAGE GetRangeAt
-    // ContainsNode
-
-    // getCurrentRange() {
-    //     let selection = window.getSelection();
-    //     return selection.rangeCount ? selection.getRangeAt(0) : null;
-    // }
-
     // ÇA PEUT VOUS AIDER A GERER LES PRESENCES DANS LES PARAGRAPHES
     containsBoldText(paragraph) {
         return paragraph.querySelector('b, strong') !== null;
@@ -148,9 +102,7 @@ class MyWysiwyg {
         return paragraph.querySelector('span[style*="color"]') !== null;
     }
 
-    applyStyle(style, noeuds) {
-        console.log(noeuds);
-        
+    applyStyle(style, noeuds) {        
         let object = document.createElement(style);
         object.appendChild(noeuds.extractContents());
         noeuds.insertNode(object);
