@@ -10,11 +10,6 @@ class MyWysiwyg {
         if (this.options.localStorageAutoSave != false) {
             this.startAutoSave(this.options.localStorageAutoSave);
         }
-        window.addEventListener('beforeunload', (event) => {
-            if (this.isContentChanged()) {
-                alert("Vous n'avez pas sauvegardé!");
-            }
-        });
     }
 
     initEditor() {
