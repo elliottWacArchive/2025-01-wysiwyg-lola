@@ -1,5 +1,5 @@
 class MyWysiwyg {
-    constructor(element, options = {buttons: ["bold", "italic", "color", "del", "dev-mode"]}) {
+    constructor(element, options = {buttons: ["bold", "italic", "del", "dev-mode", "color", "font-size", "text-align"]}) {
         this.element = element;
         this.options = options;
         this.initEditor();
@@ -14,30 +14,32 @@ class MyWysiwyg {
         this.element.parentNode.insertBefore(this.toolbar, this.element);
         this.createButtons();
         this.element.addEventListener('keydown', (event) => {
-            let selection = window.getSelection();
-            let range = selection.getRangeAt(0);
-            let parent = range.commonAncestorContainer;
-            if (parent.nodeType === 3) parent = parent.parentNode;
+            if (this.devView == false) {
+                let selection = window.getSelection();
+                let range = selection.getRangeAt(0);
+                let parent = range.commonAncestorContainer;
+                if (parent.nodeType === 3) parent = parent.parentNode;
+                
+                if (parent.id === this.element.id) {
+                    if (event.key.length === 1 || event.key === "Enter") {
+                            let key = event.key;
+                        if (event.key === "Enter" || event.key === " ") {
+                            key = "\u00a0";
+                        } 
+                        event.preventDefault();
             
-            if (parent.id === this.element.id) {
-                if (event.key.length === 1 || event.key === "Enter") {
-                        let key = event.key;
-                    if (event.key === "Enter" || event.key === " ") {
-                        key = "\u00a0";
+                        let newP = document.createElement("p");
+                        let txt = document.createTextNode(event.key === "Enter" ? "\u00a0" : key);
+                        newP.appendChild(txt);
+                        parent.appendChild(newP);
+            
+                        let newRange = document.createRange();
+                        newRange.setStart(newP, 0);
+                        newRange.setEnd(newP, 0);
+                        selection.removeAllRanges();
+                        selection.addRange(newRange);
                     } 
-                    event.preventDefault();
-        
-                    let newP = document.createElement("p");
-                    let txt = document.createTextNode(event.key === "Enter" ? "\u00a0" : key);
-                    newP.appendChild(txt);
-                    parent.appendChild(newP);
-        
-                    let newRange = document.createRange();
-                    newRange.setStart(newP, 0);
-                    newRange.setEnd(newP, 0);
-                    selection.removeAllRanges();
-                    selection.addRange(newRange);
-                } 
+                }
             }
         });
     }
@@ -47,6 +49,12 @@ class MyWysiwyg {
             let btn = document.createElement("button");
             btn.textContent = button;
             this.toolbar.appendChild(btn);
+            if (["color", "font-size", "text-align"].includes(button)) {
+                let input = document.createElement("input");
+                input.type = button === "color" ? "color" : "text";
+                input.placeholder = btn.textContent;
+                this.toolbar.appendChild(input);
+            }
         });
         this.checkButtons();
     }
@@ -72,13 +80,16 @@ class MyWysiwyg {
                     case "dev-mode":
                         this.devMode();
                         break;
+                    case "custom-size":
+                        this.setStyle("span", "font-size: 20px");
+                        break;
                 }
             }
         });
     }
 
     // SECURISE LE MULTI SELECTION DE MOZILLA, A CALL AVEC TT LES BOUTONS DE STYLE
-    setStyle(style) {
+    setStyle(style, path = null) {
         const selection = window.getSelection();
         console.log(selection);
         if (selection.rangeCount > 0) {
@@ -89,12 +100,12 @@ class MyWysiwyg {
                 let all = range.cloneContents();
                 // console.log(all);
                 console.log(node);
-                console.log(this.isAlradyStyle(style, node));
+                console.log(this.isAlradyStyle(style, node, path));
                 console.log("ICI recherche noeud de style");
                 
                 console.log(all.childNodes);
 
-                if (this.isAlradyStyle(style, node)) {
+                if (this.isAlradyStyle(style, node, path)) {
                     let node = range.startContainer.parentNode;
                     let all = range.cloneContents();
                     console.log("trouvé " + style)
@@ -117,7 +128,7 @@ class MyWysiwyg {
         // }
     }
 
-    isAlradyStyle(style, node) {
+    isAlradyStyle(style, node, path = null) {
         console.log(node);
         console.log(style);
         if (node.nodeType === Node.ELEMENT_NODE) {
