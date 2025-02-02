@@ -51,6 +51,7 @@ class MyWysiwyg {
             this.toolbar.appendChild(btn);
             if (["color", "font-size", "text-align"].includes(button)) {
                 let input = document.createElement("input");
+                input.id = button;
                 input.type = button === "color" ? "color" : "text";
                 input.placeholder = btn.textContent;
                 this.toolbar.appendChild(input);
@@ -72,7 +73,7 @@ class MyWysiwyg {
                         this.setStyle("I");
                         break;
                     case "color":
-                        this.setStyle("span"); // A CHANGER
+                        this.setStyle("span", document.getElementById('color').value, 'color'); // A CHANGER
                         break;
                     case "del":
                         this.setStyle("DEL");
@@ -80,8 +81,8 @@ class MyWysiwyg {
                     case "dev-mode":
                         this.devMode();
                         break;
-                    case "custom-size":
-                        this.setStyle("span", "font-size: 20px");
+                    case "font-size":
+                        this.setStyle("span", document.getElementById('font-size').value, 'font-size');
                         break;
                 }
             }
@@ -89,72 +90,52 @@ class MyWysiwyg {
     }
 
     // SECURISE LE MULTI SELECTION DE MOZILLA, A CALL AVEC TT LES BOUTONS DE STYLE
-    setStyle(style, path = null) {
+    setStyle(style, value = null, type = null) {
         const selection = window.getSelection();
         console.log(selection);
         if (selection.rangeCount > 0) {
             for (let i = 0; i < selection.rangeCount; i++) {
                 const range = selection.getRangeAt(i);
                 let node = range.startContainer.parentElement;
-                console.log(range);
-                let all = range.cloneContents();
-                // console.log(all);
-                console.log(node);
-                console.log(this.isAlradyStyle(style, node, path));
-                console.log("ICI recherche noeud de style");
-                
-                console.log(all.childNodes);
-
-                if (this.isAlradyStyle(style, node, path)) {
+                console.log("before");
+                if (this.isAlradyStyle(style, node, value, type) == -1) {
+                    console.log("already style");
+                    return;
+                } else if (this.isAlradyStyle(style, node, value, type) == 1) {
+                    console.log("checked");
                     let node = range.startContainer.parentNode;
-                    let all = range.cloneContents();
-                    console.log("trouvé " + style)
-                    console.log(node);
-                    console.log(all); // FAIRE EN SORTE QUE ÇA SUPPRIME LA BALISE STYLE À L'INTERIEUR DE LA BALISE
-                    
-                } else {
-                    console.log(range);
-                    this.applyStyle(style, range);
+                    let pnode = node.parentElement;
+                    let buf = range.extractContents();
+                    pnode.normalize();
+                    node.remove();
+                    pnode.innerHTML = buf.textContent;
+                } else if (this.isAlradyStyle(style, node, value, type) == 0) {
+                    console.log("passe le = a 0");
+                    this.applyStyle(style, range, value, type);
                 }
             }
         } else {
             console.log("Aucun texte selectionné");
         }
-        // const selection = window.getSelection();
-        // if (selection.rangeCount > 0) {
-        //     for (let i = 0; i < selection.rangeCount; i++) {
-        //         this.applyStyle(style, i); // A CHANGER
-        //     }
-        // }
     }
 
-    isAlradyStyle(style, node, path = null) {
-        console.log(node);
-        console.log(style);
-        if (node.nodeType === Node.ELEMENT_NODE) {
-            console.log("Element node:", node.tagName); // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
-            if (node.tagName === style) {
-                // node.remove(); RAJOUTER UNE FONCTION POUR Y EXTRAIRE LE TEXTE
-                console.log(node);
-                this.deleteStyleText(style, node);
-                console.log("Pret à supprimer noeud");
-                return true; 
-            } else { 
-                console.log(node.childNodes);
-                this.isAlradyStyle(style, node.childNodes);
-            } 
+    isAlradyStyle(style, node, value = null, type = null) {
+        if (type !== null && node.style[0] == value) {
+            console.log(node.style);
+            node.style[type] = value;
+            return -1;
+        } else if ((node.nodeType === Node.ELEMENT_NODE) || (node.nodeType === Node.TEXT_NODE)) {
+                console.log("Element node:", node.tagName); // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
+                if (node.tagName === style && (value === null || node.classList.contains(type))) {
+                    console.log(node);
+                    return 1; 
+                } else { 
+                    this.isAlradyStyle(style, node.childNodes, value);
+                } 
         }
-        return false;
+        return 0;
     }
 
-    deleteStyleText(style, node) {
-        let text = node.textContent;
-        console.log(text);
-        let parent = node.parentNode;
-        console.log(parent);
-        let textNode = document.createTextNode(text);
-        parent.replaceChild(textNode, node);
-    }
     // LE RANGECOUNT RENVOIE LE NOMBRE DE SELECTIONS QU'IL Y A SUR LA PAGE GetRangeAt
     // ContainsNode
 
@@ -163,10 +144,21 @@ class MyWysiwyg {
     //     return selection.rangeCount ? selection.getRangeAt(0) : null;
     // }
 
-    applyStyle(style, noeuds) {        
-        let object = document.createElement(style);
-        object.appendChild(noeuds.extractContents());
-        noeuds.insertNode(object);
+    applyStyle(style, noeudsn, value = null, type = null) {      
+        if (value !== null && type !== null) {
+            console.log("value", value);
+            console.log("type", type);
+            let object = document.createElement(style);
+            object.classList.add(type);
+            object.style[type] = value;
+            object.appendChild(noeudsn.extractContents());
+            noeudsn.insertNode(object);
+            console.log(object);
+        } else {  
+            let object = document.createElement(style);
+            object.appendChild(noeudsn.extractContents());
+            noeudsn.insertNode(object);
+        }
     }
 
     // BONUS
