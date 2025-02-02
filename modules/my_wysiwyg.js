@@ -1,5 +1,5 @@
 class MyWysiwyg {
-    constructor(element, options = {buttons: ["bold", "italic", "color"]}) {
+    constructor(element, options = {buttons: ["bold", "italic", "del", "dev-mode", "color", "font-size", "text-align"]}) {
         this.element = element;
         this.options = options;
         this.initEditor();
@@ -13,6 +13,35 @@ class MyWysiwyg {
         this.toolbar.classList.add("wysiwyg-toolbar");
         this.element.parentNode.insertBefore(this.toolbar, this.element);
         this.createButtons();
+        this.element.addEventListener('keydown', (event) => {
+            if (this.devView == false) {
+                let selection = window.getSelection();
+                let range = selection.getRangeAt(0);
+                let parent = range.commonAncestorContainer;
+                if (parent.nodeType === 3) parent = parent.parentNode;
+                
+                if (parent.id === this.element.id) {
+                    if (event.key.length === 1 || event.key === "Enter") {
+                            let key = event.key;
+                        if (event.key === "Enter" || event.key === " ") {
+                            key = "\u00a0";
+                        } 
+                        event.preventDefault();
+            
+                        let newP = document.createElement("p");
+                        let txt = document.createTextNode(event.key === "Enter" ? "\u00a0" : key);
+                        newP.appendChild(txt);
+                        parent.appendChild(newP);
+            
+                        let newRange = document.createRange();
+                        newRange.setStart(newP, 0);
+                        newRange.setEnd(newP, 0);
+                        selection.removeAllRanges();
+                        selection.addRange(newRange);
+                    } 
+                }
+            }
+        });
     }
 
     createButtons() {
@@ -20,99 +49,123 @@ class MyWysiwyg {
             let btn = document.createElement("button");
             btn.textContent = button;
             this.toolbar.appendChild(btn);
-            if (button === "color") {
-                let pick = document.createElement("input");
-                pick.type = "color";
-                this.toolbar.appendChild(pick);
+            if (["color", "font-size", "text-align"].includes(button)) {
+                let input = document.createElement("input");
+                input.id = button;
+                input.type = button === "color" ? "color" : "text";
+                input.placeholder = btn.textContent;
+                this.toolbar.appendChild(input);
             }
         });
         this.checkButtons();
     }
 
-    // AJOUTER UN BOUTON A LA LISTE POUR QU'IL SOIT PRIS EN COMPTE
-    checkButtons() {
-        document.addEventListener("click", (e) => {
-            if (e.target.nodeName === "BUTTON") {
-                let button = e.target.textContent;
-                switch (button) {
-                    case "bold":
-                        this.setStyle("B");
-                        break;
-                    case "italic":
-                        this.setStyle("I");
-                        break;
-                    case "color":
-                        this.setStyle("span");
-                        const selection = window.getSelection();
-                        console.log(selection);
-                        break;
-                    case "del":
-                        this.setStyle("DEL");
-                        break;
-                    case "dev-mode":
-                        this.devMode();
-                        break;
-                }
-            }
-        });
-    }
-
-    changeStyle(elem) {
-
-    }
-
     // SECURISE LE MULTI SELECTION DE MOZILLA, A CALL AVEC TT LES BOUTONS DE STYLE
-    setStyle(style) {
+  // AJOUTER UN BOUTON A LA LISTE POUR QU'IL SOIT PRIS EN COMPTE
+  checkButtons() {
+    document.addEventListener("click", (e) => {
+        if (e.target.nodeName === "BUTTON") {
+            let button = e.target.textContent;
+            switch (button) {
+                case "bold":
+                    this.setStyle("B");
+                    break;
+                case "italic":
+                    this.setStyle("I", null, null);
+                    break;
+                case "color":
+                    this.setStyle("span", document.getElementById('color').value, 'color'); // A CHANGER
+                    break;
+                case "del":
+                    this.setStyle("DEL");
+                    break;
+                case "dev-mode":
+                    this.devMode();
+                    break;
+                case "font-size":
+                    this.setStyle("span", document.getElementById('font-size').value, 'font-size');
+                    break;
+                case "text-align":
+                    this.setStyle( "", document.getElementById('text-align').value, 'text-align');
+            }
+        }
+    })
+}
+    setStyle(style, value = null, type = null) {
         const selection = window.getSelection();
         if (selection.rangeCount > 0) {
             for (let i = 0; i < selection.rangeCount; i++) {
                 const range = selection.getRangeAt(i);
-                let node = range.startContainer.parentElement;
-                if (this.isAlradyStyle(style, node)) {
-                    let node = range.startContainer.parentNode;
-                    let pnode = node.parentElement;
-                    let buf = range.extractContents();
-                    pnode.normalize();
-                    node.remove();
-                    pnode.innerHTML = buf.textContent;
-                } else {
-                    this.applyStyle(style, range);
+                let node = range.startContainer;
+                // commonAncestorContainer;
+                if (node.nodeType === Node.TEXT_NODE) {
+                    node = node.parentNode;
+                }
+                if (type == 'text-align'){
+                    this.applyStyle('ali', range, value, type);
+                }
+                const alreadyStyled = this.isAlradyStyle(style, node, value, type);
+                if (alreadyStyled === 0) {
+                    console.log("Appliquer le style :", style);
+                    this.applyStyle(style, range, value, type);
+                } else if (alreadyStyled === -1) {
+                    console.log("Style déjà appliqué.");
+                    return;
+                } else if (alreadyStyled === 1) {
+                    console.log("Suppression du style.");
+                    let extractedContent = range.extractContents();
+                    let textContent = extractedContent.textContent;
+        
+                    // Supprimer l'ancien style en réinsérant le texte brut
+                    let textNode = document.createTextNode(textContent);
+                    range.insertNode(textNode);
+        
+                    // Nettoyer le DOM pour éviter les balises vides
+                    node.normalize();
                 }
             }
-        } else {
-            console.log("Aucun texte selectionné");
         }
     }
 
-    isAlradyStyle(style, node, clas) {
-        if ((node.nodeType === Node.ELEMENT_NODE) || (node.nodeType === Node.TEXT_NODE)) {
-// VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
-                if ((node.tagName === style)) {
-                    return true; 
-                } else { 
-                    this.isAlradyStyle(style, node.childNodes);
-            } 
+    isAlradyStyle(style, node, value = null, type = null) {   
+        if (!node || node.nodeType !== Node.ELEMENT_NODE) return 0;
+        console.log("Vérification du style sur :", node.tagName);
+        if (node.style[type] === value) {
+            console.log("Style déjà appliqué :", node.style);
+            return 1; // Style déjà présent
+        } 
+        if (node.tagName === style.toUpperCase() || (node.classList && node.classList.contains(type))) {
+            return 1; 
         }
-        return false;
-    }
-    // LE RANGECOUNT RENVOIE LE NOMBRE DE SELECTIONS QU'IL Y A SUR LA PAGE GetRangeAt
-    // ÇA PEUT VOUS AIDER A GERER LES PRESENCES DANS LES PARAGRAPHES
-    containsBoldText(paragraph) {
-        return paragraph.querySelector('b, strong') !== null;
+        return this.isAlradyStyle(style, node.parentNode, value, type);
     }
 
-    containsItalicText(paragraph) {
-        return paragraph.querySelector('i, em') !== null;
-    }
-
-    containsColoredText(paragraph) {
-        return paragraph.querySelector('span[style*="color"]') !== null;
-    }
-
-    applyStyle(style, noeuds) {        
-        let object = document.createElement(style);
-        object.appendChild(noeuds.extractContents());
-        noeuds.insertNode(object);
+    applyStyle(style, noeudsn, value = null, type = null) {      
+        if (value !== null && type !== null) {
+            let object = "";
+            console.log("value", value);
+            console.log("type", type);
+            if (style === 'ali'){
+                object = noeudsn.startContainer;
+                if (object.nodeType === Node.TEXT_NODE) {
+                    let wrapper = document.createElement("span");
+                    wrapper.appendChild(object);
+                    object = wrapper;
+                    if (object.nodeType === Node.ELEMENT_NODE) {
+                        object.classList.add(type);
+                        object.style[type] = value;
+                    }
+                    object.appendChild(noeudsn.extractContents());
+                    noeudsn.insertNode(object);
+                } else {  
+                let object = document.createElement(style);
+                object.appendChild(noeudsn.extractContents());
+                noeudsn.insertNode(object);
+                }
+            }
+        }
+        console.log("fin");
+        
     }
 
     // BONUS
