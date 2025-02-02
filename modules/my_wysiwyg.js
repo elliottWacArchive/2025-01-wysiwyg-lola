@@ -20,6 +20,11 @@ class MyWysiwyg {
             let btn = document.createElement("button");
             btn.textContent = button;
             this.toolbar.appendChild(btn);
+            if (button === "color") {
+                let pick = document.createElement("input");
+                pick.type = "color";
+                this.toolbar.appendChild(pick);
+            }
         });
         this.checkButtons();
     }
@@ -37,7 +42,9 @@ class MyWysiwyg {
                         this.setStyle("I");
                         break;
                     case "color":
-                        this.setStyle("span"); // A CHANGER
+                        this.setStyle("span");
+                        const selection = window.getSelection();
+                        console.log(selection);
                         break;
                     case "del":
                         this.setStyle("DEL");
@@ -77,10 +84,10 @@ class MyWysiwyg {
         }
     }
 
-    isAlradyStyle(style, node) {
+    isAlradyStyle(style, node, clas) {
         if ((node.nodeType === Node.ELEMENT_NODE) || (node.nodeType === Node.TEXT_NODE)) {
 // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
-                if (node.tagName === style) {
+                if ((node.tagName === style)) {
                     return true; 
                 } else { 
                     this.isAlradyStyle(style, node.childNodes);
