@@ -1,16 +1,16 @@
+
 class MyWysiwyg {
-    constructor(element, options = {buttons: ["bold", "italic", "del"], disable_buttons , skyn: ["default-theme"], localStorageAutoSave: false}) {
+    constructor(element, options = {buttons: ["bold", "italic", "del"], disable_buttons : [] , skin: "default-theme", localStorageAutoSave: false}) {
+
         this.element = element;
         this.options = options;
         this.devView = false;
-        this.skyn = this.options.skyn;
+        this.skin = this.options.skin
         this.initEditor();
-        console.log(this.skyn);
     }
 
     initEditor() {
-        this.skyn = this.skyn[0];
-        document.head.innerHTML += "<link rel='stylesheet' href='./modules/style/" + this.skyn + "/style.css'>";
+        document.head.innerHTML += "<link rel='stylesheet' href='./modules/style/" + this.skin + "/style.css'>";
         this.element.classList.add("wysiwyg-editor");
         this.element.contentEditable = true;
         this.element.style.outline = "none";

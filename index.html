@@ -3,7 +3,7 @@
 <head>
     <script type="module">
         import { MyWysiwyg } from "./modules/my_wysiwyg.js";
-        let mv = new MyWysiwyg(document.getElementById('textarea'), {disable_buttons: ["italic", "del"], localStorageAutoSave: 1});
+        let mv = new MyWysiwyg(document.getElementById("textarea"), {buttons: ["color"], disable_buttons: ['del','italic'], skin: "miku-theme", localStorageAutoSave: 1});
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
