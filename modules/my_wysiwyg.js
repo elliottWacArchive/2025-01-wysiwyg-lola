@@ -115,12 +115,8 @@ class MyWysiwyg {
                     console.log("Suppression du style.");
                     let extractedContent = range.extractContents();
                     let textContent = extractedContent.textContent;
-        
-                    // Supprimer l'ancien style en réinsérant le texte brut
                     let textNode = document.createTextNode(textContent);
                     range.insertNode(textNode);
-        
-                    // Nettoyer le DOM pour éviter les balises vides
                     node.normalize();
                 }
             }
@@ -143,33 +139,29 @@ class MyWysiwyg {
     applyStyle(style, noeudsn, value = null, type = null) {      
         if (value !== null && type !== null) {
             let object = "";
-            console.log("value", value);
-            console.log("type", type);
             if (style === 'ali'){
                 object = noeudsn.startContainer;
                 if (object.nodeType === Node.TEXT_NODE) {
                     let wrapper = document.createElement("span");
                     wrapper.appendChild(object);
                     object = wrapper;
-                    if (object.nodeType === Node.ELEMENT_NODE) {
+                }
+                if (object.nodeType === Node.ELEMENT_NODE) {
                         object.classList.add(type);
                         object.style[type] = value;
-                    }
-                    object.appendChild(noeudsn.extractContents());
-                    noeudsn.insertNode(object);
-                } else {  
-                let object = document.createElement(style);
+                }
                 object.appendChild(noeudsn.extractContents());
                 noeudsn.insertNode(object);
+                } else { 
+                    object = document.createElement(style);
+                    object.appendChild(noeudsn.extractContents());
+                    noeudsn.insertNode(object);
                 }
+                }
+            
+                console.log("fin");
             }
-        }
-        console.log("fin");
-        
-    }
-
     // BONUS
-
     devMode() {
         if (!this.devView) {
             const editView = this.element.innerHTML;
@@ -184,6 +176,5 @@ class MyWysiwyg {
             this.devView = false;
         }
     }
-};
-
+}
 export { MyWysiwyg };
