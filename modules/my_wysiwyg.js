@@ -19,7 +19,6 @@ class MyWysiwyg {
                 let range = selection.getRangeAt(0);
                 let parent = range.commonAncestorContainer;
                 if (parent.nodeType === 3) parent = parent.parentNode;
-                
                 if (parent.id === this.element.id) {
                     if (event.key.length === 1 || event.key === "Enter") {
                             let key = event.key;
@@ -96,19 +95,26 @@ class MyWysiwyg {
         if (selection.rangeCount > 0) {
             for (let i = 0; i < selection.rangeCount; i++) {
                 const range = selection.getRangeAt(i);
-                let node = range.startContainer.parentNode;
+                let node = range.startContainer.parentElement;
+                console.log(node);
+                 console.log(selection);
+                 
+                 console.log(node.firstChild);
                 // console.log(node);
                 // .startContainer
                 // commonAncestorContainer;
                 // if (node.nodeType === Node.TEXT_NODE) {
                 //     node = node.parentNode;
                 // }
-                console.log(node);
+                // console.log(node);
                 
                 if (type === 'text-align'){
                     this.applyStyle('ali', range, value, type);
                 }
                 const alreadyStyled = this.isAlradyStyle(style, node, value, type);
+                console.log(alreadyStyled);
+                console.log(node);
+                
                 if (alreadyStyled === 0) {
                     console.log("Appliquer le style :", style);
                     this.applyStyle(style, range, value, type);
@@ -118,9 +124,9 @@ class MyWysiwyg {
                 } else if (alreadyStyled === 1) {
                     console.log("Suppression du style.");
                     let extractedContent = range.extractContents();
-                    console.log(extractedContent);
-                    console.log(node);
-                    console.log(range);
+                    // console.log(extractedContent);
+                    // console.log(node);
+                    // console.log(range);
                     
                     let textContent = extractedContent.textContent;
                     let textNode = document.createTextNode(textContent);
@@ -134,54 +140,75 @@ class MyWysiwyg {
         
     } 
 
-    isAlradyStyle(style, node, value = null, type = null) {   
-        if (!node){
-            console.log("erreur");
+    isAlradyStyle(style, node, value = null, type = null) {
+        if (style == 'span' && node.tagName == 'SPAN') {
+            node.style[type] = value;
             return -1;
+        } else if ((node.nodeType === Node.ELEMENT_NODE) || (node.nodeType === Node.TEXT_NODE)) {
+                console.log("Element node:", node.tagName); // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
+                if (node.tagName === style && (value === null)) {
+                    return 1; 
+                } else { 
+                    this.isAlradyStyle(style, node.childNodes, value);
+                } 
         }
-        console.log(node);
-        console.log(node.nodeType);
-        console.log(node);
-        
-        console.log("Vérification du style sur :", node.tagName);
-        console.log(node);
-        // if (node.style[type] === value) {
-        //     console.log("Style déjà appliqué :", node.style);
-        //     return 1;
-        // } 
-        if (node.tagName === style.toUpperCase() || (node.classList && node.classList.contains(type))) {
-            return 1; 
-        }
-        return this.isAlradyStyle(style, node.parentNode, value, type);
+        return 0;
     }
 
-    applyStyle(style, noeudsn, value = null, type = null) {      
-            let object;
-                console.log(noeudsn);
-                
-            if (style === 'ali'){
-                object = noeudsn.startContainer;
+    applyStyle(style, range, value = null, type = null) {  
+        let node = range.startContainer.parentElement;
+        console.log(node);
+        // const range = selection.getRangeAt(i);
+        // let node = range.startContainer.parentElement;.    
+            if (style !== null) {
+                let object = document.createElement(style);
+                type ? style : value;
+                object.classList.add(type);
+                if (type === 'lien') {
+                    // Petites questions        // const range = selection.getRangeAt(i);
+
+                    object.href = value;
+                } else {
+                    object.style[type] = value;
+                }
                 if (object.nodeType === Node.TEXT_NODE) {
                     let wrapper = document.createElement("div");
                     wrapper.appendChild(object);
                     object = wrapper;
                     // div selection
                     console.log(object);
-                } else {
-                    object = document.createElement(style);
+                }  else if (object.nodeType === Node.ELEMENT_NODE) {
+                    console.log("in Model modul");
+                    // object.classList.add(type);
+                    // object.style[type] = value;
+                    console.log(object);
+                    
+                    // noeudsn.appendChild(object.extractContents());
+                    // noeudsn.insertNode(object);
+                    // let txt = node.extractContents();
+                    // console.log(txt);
+                    let textContent = range.extractContents();
+                    console.log(textContent);
+                    // node.insertNode(textContent);
+                    // console.log(textContent);
+                    // object.appendChild(node.extractContents());
+                    // node.insertNode(object);
+                    let textNode = document.createTextNode(textContent);
+                    console.log(textContent);
+                    console.log(textNode);
+                    
+                    // object.insertNode(textNode);
+                    node.appendChild(textNode.textContent);
+                    // node.insertNode(textNode);
+                    // noeudsn.style.removeProperty(style);
+                    // noeudsn.insertNode(textNode);
+                    // node.normalize();
+                    textNode.appendChild(node);
+                    }
 
-                if (object.nodeType === Node.ELEMENT_NODE) {
-                        object.classList.add(type);
-                        object.style[type] = value;
-                object.appendChild(noeudsn.extractContents());
-                noeudsn.insertNode(object);
-                } else {  
-                object = document.createElement(style);
-                object.appendChild(object.extractContents());
-                noeudsn.insertNode(object);
-                }
             }
-            }
+            console.log("Fin sans réponse");
+            
     }
     // BONUS
     devMode() {
