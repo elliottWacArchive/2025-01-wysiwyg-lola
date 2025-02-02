@@ -1,0 +1,121 @@
+:root {
+    /* Miku Palette */
+    --m-l-green: #87e5cf;
+    --m-l-grey: #bec8d1;
+    --m-d-grey: #373b3e;
+    --m-l-blue: #86cecb;
+    --m-d-blue: #137a7f;
+    --m-l-pink: #e12885;
+}
+
+body {
+    background-color: var(--m-d-grey);
+    color: black;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.wysiwyg-toolbar {
+    background-color: var(--m-d-blue);
+    border: 4px solid var(--m-d-grey);
+    width: 808px;
+    padding: 12px 0;
+    margin: 16px auto;
+    align-items: center;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 5px 5px 0px 0px #137a7f, 
+    10px 10px 0px 0px #11696e, 
+    15px 15px 0px 0px #0f585d, 
+    20px 20px 0px 0px #0d474c, 
+    25px 25px 0px 0px #0b363b, 
+    5px 5px 15px 5px rgba(11,74,77,0);
+}
+
+.wysiwyg-toolbar button:hover {
+    background-color: lightslategray;
+    color: black;
+}
+
+.wysiwyg-editor p {
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1.5;
+
+}
+
+.wysiwyg-editor {
+    color: var(--m-l-pink);
+    width: 790px;
+    height: 400px;
+    margin: 0 auto;
+    padding: 10px;
+    overflow-y: scroll;
+    border: 4px solid var(--m-d-grey);
+    background-image: url(wallpaper.jpg);
+    background-size: cover;
+    backdrop-filter: blur(5px);
+    box-shadow: 5px 5px 0px 0px #137a7f, 
+                10px 10px 0px 0px #11696e, 
+                15px 15px 0px 0px #0f585d, 
+                20px 20px 0px 0px #0d474c, 
+                25px 25px 0px 0px #0b363b, 
+                5px 5px 15px 5px rgba(11,74,77,0);
+}
+
+
+
+.wysiwyg-toolbar input {
+    background-color: var(--m-l-pink);
+    padding: 10px 20px;
+    border-radius: 5px;
+    outline: none;
+    border: 0;
+    color: black;
+}
+
+.wysiwyg-toolbar input::placeholder {
+    color: black;
+    opacity: 0.7;
+}
+
+#color {
+    padding: 0;
+    width: 68.89px;
+    height: 35px;
+}
+
+.wysiwyg-toolbar button {
+    background-color: var(--m-l-pink);
+    /* border: 1px rgb(78, 78, 78) solid; */
+    color: black;
+    border: 0;
+    padding: 10px 20px;
+    border-radius: 5px;
+    outline: none;
+}
+
+    /* width */
+:-webkit-scrollbar {
+    width: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: none;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--m-l-pink);
+}
+
+/* Firefox */
+ * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--m-l-pink) transparent;
+}
