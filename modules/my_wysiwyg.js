@@ -7,6 +7,9 @@ class MyWysiwyg {
         this.devView = false;
         this.skin = this.options.skin
         this.initEditor();
+        if (this.options.localStorageAutoSave != false) {
+            this.startAutoSave(this.options.localStorageAutoSave);
+        }
     }
 
     initEditor() {
@@ -24,7 +27,10 @@ class MyWysiwyg {
         } else {
             this.element.innerHTML += "<p>Anthonin</p><p>Lola</p><p>et Elliott</p><p><b>Sont un super Trio!!!</b></p>"
         }
-        this.initializeLocalStorage();
+
+        document.getElementById('save').addEventListener('click', () => {
+            this.saveContent();
+        });
         this.element.addEventListener('keydown', (event) => {
             if (this.devView == false) {
                 let selection = window.getSelection();
@@ -56,17 +62,17 @@ class MyWysiwyg {
         });
     }
 
-    // initializeLocalStorage() {
-    //     this.setLocalStorage(this.options.localStorageAutoSave);
-    // }
+    saveContent() {
+        alert("Fichier sauvegardé!");
+        localStorage.setItem("wysiwyg", this.element.innerHTML);
+    }
 
-    // setLocalStorage(autoSave) {
-    //     if (autoSave) {
-    //         this.element.addEventListener('input', () => {
-    //             localStorage.setItem("wysiwyg", this.element.innerHTML);
-    //         });
-    //     }
-    // }
+    startAutoSave(intervalMinutes) {
+        setInterval(() => {
+            this.saveContent();
+        }, intervalMinutes * 60 * 1000);
+    }
+
 
     createButtons() {
         if (this.options.buttons) {
