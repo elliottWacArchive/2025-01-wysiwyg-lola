@@ -60,81 +60,74 @@ class MyWysiwyg {
         this.checkButtons();
     }
 
-    // AJOUTER UN BOUTON A LA LISTE POUR QU'IL SOIT PRIS EN COMPTE
-    checkButtons() {
-        document.addEventListener("click", (e) => {
-            if (e.target.nodeName === "BUTTON") {
-                let button = e.target.textContent;
-                switch (button) {
-                    case "bold":
-                        this.setStyle("B");
-                        break;
-                    case "italic":
-                        this.setStyle("I");
-                        break;
-                    case "color":
-                        this.setStyle("span", document.getElementById('color').value, 'color'); // A CHANGER
-                        break;
-                    case "del":
-                        this.setStyle("DEL");
-                        break;
-                    case "dev-mode":
-                        this.devMode();
-                        break;
-                    case "font-size":
-                        this.setStyle("span", document.getElementById('font-size').value, 'font-size');
-                        break;
-                }
-            }
-        });
-    }
+   
 
-    // SECURISE LE MULTI SELECTION DE MOZILLA, A CALL AVEC TT LES BOUTONS DE STYLE
-    setStyle(style, value = null, type = null) {
-        const selection = window.getSelection();
-        console.log(selection);
-        if (selection.rangeCount > 0) {
-            for (let i = 0; i < selection.rangeCount; i++) {
-                const range = selection.getRangeAt(i);
-                let node = range.startContainer.parentElement;
-                console.log("before");
-                if (this.isAlradyStyle(style, node, value, type) == -1) {
-                    console.log("already style");
-                    return;
-                } else if (this.isAlradyStyle(style, node, value, type) == 1) {
-                    console.log("checked");
-                    let node = range.startContainer.parentNode;
-                    let pnode = node.parentElement;
-                    let buf = range.extractContents();
-                    pnode.normalize();
-                    node.remove();
-                    pnode.innerHTML = buf.textContent;
-                } else if (this.isAlradyStyle(style, node, value, type) == 0) {
-                    console.log("passe le = a 0");
-                    this.applyStyle(style, range, value, type);
-                }
-            }
-        } else {
-            console.log("Aucun texte selectionné");
-        }
-    }
 
-    isAlradyStyle(style, node, value = null, type = null) {
-        if (type !== null && node.style[0] == value) {
-            console.log(node.style);
-            node.style[type] = value;
-            return -1;
-        } else if ((node.nodeType === Node.ELEMENT_NODE) || (node.nodeType === Node.TEXT_NODE)) {
-                console.log("Element node:", node.tagName); // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
-                if (node.tagName === style && (value === null || node.classList.contains(type))) {
-                    console.log(node);
-                    return 1; 
-                } else { 
-                    this.isAlradyStyle(style, node.childNodes, value);
-                } 
-        }
-        return 0;
-    }
+                // ESSAI AU DESSUS 
+    //             console.log(node);
+    //             if (this.isAlradyStyle(style, node, value, type) == 0) {
+    //                 console.log("passe le = a 0");
+    //                 this.applyStyle(style, range, value, type);
+    //             }
+    //             if (this.isAlradyStyle(style, node, value, type) == -1) {
+    //                 console.log("already style");
+    //                 return;
+    //             } else if (this.isAlradyStyle(style, node, value, type) == 1) {
+    //                 console.log("checked");
+                    
+    //                 let buffer = node.innerHTML;
+    //                 let buf = range.extractContents();
+    //                 console.log(buffer);
+    //                 let start = range.startOffset;
+    //                 console.log(node);
+    //                 console.log(buf.textContent);
+                    
+    //                 // node.remove();
+    //                 console.log(start);
+    //                 // range.insertNode(node.appendChild);
+    //                 node.innerHTML += buf.textContent;
+    //                 // buf.append(node.ch);
+    //                 // node.innerHTML += buf.textContent;
+    //                 node.normalize();
+    //                 console.log("fin");
+                    
+    //                 // console.log(pnode);
+                    
+    //             }
+    //         }
+    //     } else {
+    //         console.log("Aucun texte selectionné");
+    //     }
+    // }
+
+    
+    // isAlradyStyle(style, node, value = null, type = null) {
+    //     console.log(node);
+    //     if (type !== null && node.style[0] == value) {
+    //         console.log(node.style);
+    //         node.style[type] = value;
+    //         return -1;
+    //     } else if ((node.nodeType === Node.ELEMENT_NODE) || (node.nodeType === Node.TEXT_NODE)) {
+    //             console.log("Element node:", node.tagName); // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
+    //             // console.log(node.tagName);
+                
+    //             if ((node.tagName == style || node.tagName == 'P') && (value == null || node.classList.contains(type))) {
+    //                 // console.log(node);
+    //                 console.log("jst befor the right moment");
+    //                 return 1; 
+    //             } else {
+    //                 console.log(node.nextSibling);
+    //                 if (node.nextSibling !== null) {
+    //                     // console.log(node.children.nextSibling);
+    //                     this.isAlradyStyle(style, node.nextSibling, value, type);
+    //                 }
+    //                 // if (node.tagName === 'P') {
+    //                 //     return 1;
+    //                 // }
+    //             }
+    //     }             
+    //     return 0;
+    // }
 
     // LE RANGECOUNT RENVOIE LE NOMBRE DE SELECTIONS QU'IL Y A SUR LA PAGE GetRangeAt
     // ContainsNode
@@ -143,21 +136,109 @@ class MyWysiwyg {
     //     let selection = window.getSelection();
     //     return selection.rangeCount ? selection.getRangeAt(0) : null;
     // }
+    // SECURISE LE MULTI SELECTION DE MOZILLA, A CALL AVEC TT LES BOUTONS DE STYLE
+  // AJOUTER UN BOUTON A LA LISTE POUR QU'IL SOIT PRIS EN COMPTE
+  checkButtons() {
+    document.addEventListener("click", (e) => {
+        if (e.target.nodeName === "BUTTON") {
+            let button = e.target.textContent;
+            switch (button) {
+                case "bold":
+                    this.setStyle("B");
+                    break;
+                case "italic":
+                    this.setStyle("I", null, null);
+                    break;
+                case "color":
+                    this.setStyle("span", document.getElementById('color').value, 'color'); // A CHANGER
+                    break;
+                case "del":
+                    this.setStyle("DEL");
+                    break;
+                case "dev-mode":
+                    this.devMode();
+                    break;
+                case "font-size":
+                    this.setStyle("span", document.getElementById('font-size').value, 'font-size');
+                    break;
+                case "text-align":
+                    this.setStyle( "", document.getElementById('text-align').value, 'text-align');
+            }
+        }
+    });
+}.
+    setStyle(style, value = null, type = null) {
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            for (let i = 0; i < selection.rangeCount; i++) {
+                const range = selection.getRangeAt(i);
+                let node = range.startContainer;
+                // commonAncestorContainer;
+                if (node.nodeType === Node.TEXT_NODE) {
+                    node = node.parentNode;
+                }
+                if (type == 'text-align'){
+                    this.applyStyle('ali', range, value, type);
+                }
+                const alreadyStyled = this.isAlradyStyle(style, node, value, type);
+                if (alreadyStyled === 0) {
+                    console.log("Appliquer le style :", style);
+                    this.applyStyle(style, range, value, type);
+                } else if (alreadyStyled === -1) {
+                    console.log("Style déjà appliqué.");
+                    return;
+                } else if (alreadyStyled === 1) {
+                    console.log("Suppression du style.");
+                    let extractedContent = range.extractContents();
+                    let textContent = extractedContent.textContent;
+        
+                    // Supprimer l'ancien style en réinsérant le texte brut
+                    let textNode = document.createTextNode(textContent);
+                    range.insertNode(textNode);
+        
+                    // Nettoyer le DOM pour éviter les balises vides
+                    node.normalize();
+                }
+            }
+        }
+    }
+
+    isAlradyStyle(style, node, value = null, type = null) {   
+        if (!node || node.nodeType !== Node.ELEMENT_NODE) return 0;
+        console.log("Vérification du style sur :", node.tagName);
+        if (node.style[type] === value) {
+            console.log("Style déjà appliqué :", node.style);
+            return 1; // Style déjà présent
+        } 
+        if (node.tagName === style.toUpperCase() || (node.classList && node.classList.contains(type))) {
+            return 1; 
+        }
+        return this.isAlradyStyle(style, node.parentNode, value, type);
+    }
 
     applyStyle(style, noeudsn, value = null, type = null) {      
         if (value !== null && type !== null) {
+            let object = "";
             console.log("value", value);
             console.log("type", type);
-            let object = document.createElement(style);
-            object.classList.add(type);
-            object.style[type] = value;
-            object.appendChild(noeudsn.extractContents());
-            noeudsn.insertNode(object);
-            console.log(object);
-        } else {  
-            let object = document.createElement(style);
-            object.appendChild(noeudsn.extractContents());
-            noeudsn.insertNode(object);
+            if (style === 'ali'){
+                object = noeudsn.startContainer;
+                if (object.nodeType === Node.TEXT_NODE) {
+                    let wrapper = document.createElement("span");
+                    wrapper.appendChild(object);
+                    object = wrapper;
+                    if (object.nodeType === Node.ELEMENT_NODE) {
+                        object.classList.add(type);
+                        object.style[type] = value;
+                    }
+                    object.appendChild(noeudsn.extractContents());
+                    noeudsn.insertNode(object);
+                } else {  
+                let object = document.createElement(style);
+                object.appendChild(noeudsn.extractContents());
+                noeudsn.insertNode(object);
+                }
+            }
         }
     }
 
