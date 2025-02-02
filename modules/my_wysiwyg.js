@@ -24,6 +24,7 @@ class MyWysiwyg {
         } else {
             this.element.innerHTML += "<p>Anthonin</p><p>Lola</p><p>et Elliott</p><p><b>Sont un super Trio!!!</b></p>"
         }
+        this.initializeLocalStorage();
         this.element.addEventListener('keydown', (event) => {
             if (this.devView == false) {
                 let selection = window.getSelection();
@@ -38,12 +39,12 @@ class MyWysiwyg {
                             key = "\u00a0";
                         } 
                         event.preventDefault();
-            
+                        
                         let newP = document.createElement("p");
                         let txt = document.createTextNode(event.key === "Enter" ? "\u00a0" : key);
                         newP.appendChild(txt);
                         parent.appendChild(newP);
-            
+                        
                         let newRange = document.createRange();
                         newRange.setStart(newP, 0);
                         newRange.setEnd(newP, 0);
@@ -55,19 +56,17 @@ class MyWysiwyg {
         });
     }
 
-    setLocalStorage(localStorageAutoSave = false) {
-        if (localStorageAutoSave) {
-            setInterval(() => {
-                localStorage.setItem("wysiwyg", this.element.innerHTML);
-            }, localStorageAutoSave * 60000); // Convert minutes to milliseconds
-        }
-        this.toolbar.addEventListener("click", (e) => {
-            if (e.target.id === "save") {
-                localStorage.setItem("wysiwyg", this.element.innerHTML);
-                alert("Saved");
-            }
-        });
-    }
+    // initializeLocalStorage() {
+    //     this.setLocalStorage(this.options.localStorageAutoSave);
+    // }
+
+    // setLocalStorage(autoSave) {
+    //     if (autoSave) {
+    //         this.element.addEventListener('input', () => {
+    //             localStorage.setItem("wysiwyg", this.element.innerHTML);
+    //         });
+    //     }
+    // }
 
     createButtons() {
         if (this.options.buttons) {
@@ -76,10 +75,10 @@ class MyWysiwyg {
             let btn = document.createElement("button");
             btn.textContent = button;
             this.toolbar.appendChild(btn);
-            if (["color", "font-size"].includes(button)) {
+            if (["color", "lien", "font-size"].includes(button)) {
                 let input = document.createElement("input");
                 input.id = button;
-                input.type = button === "color" ? "color" : "number";
+                input.type = button === "color" ? "color" : "text";
                 input.placeholder = btn.textContent;
                 this.toolbar.appendChild(input);
             }
@@ -99,6 +98,9 @@ class MyWysiwyg {
                         break;
                     case "italic":
                         this.setStyle("I");
+                        break;
+                    case "lien":
+                        this.setStyle("A", document.getElementById('lien').value, 'lien');
                         break;
                     case "color":
                         this.setStyle("span", document.getElementById('color').value, 'color');
@@ -169,6 +171,10 @@ class MyWysiwyg {
             let object = document.createElement(style);
             object.classList.add(type);
             object.style[type] = value;
+            if (type === 'lien') {
+                object = document.createElement('a');
+                object.href = value;
+            }
             object.appendChild(noeuds.extractContents());
             noeuds.insertNode(object);
             console.log(object);
