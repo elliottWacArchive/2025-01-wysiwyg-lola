@@ -1,5 +1,5 @@
 class MyWysiwyg {
-    constructor(element, options = {buttons: ["bold", "italic", "del", "dev-mode", "color", "font-size", "text-align"]}) {
+    constructor(element, options = {buttons: ["bold", "italic", "del", "dev-mode", "color", "font-size"]}) {
         this.element = element;
         this.options = options;
         this.initEditor();
@@ -49,10 +49,10 @@ class MyWysiwyg {
             let btn = document.createElement("button");
             btn.textContent = button;
             this.toolbar.appendChild(btn);
-            if (["color", "font-size", "text-align"].includes(button)) {
+            if (["color", "font-size"].includes(button)) {
                 let input = document.createElement("input");
                 input.id = button;
-                input.type = button === "color" ? "color" : "text";
+                input.type = button === "color" ? "color" : "number";
                 input.placeholder = btn.textContent;
                 this.toolbar.appendChild(input);
             }
@@ -73,7 +73,7 @@ class MyWysiwyg {
                         this.setStyle("I");
                         break;
                     case "color":
-                        this.setStyle("span", document.getElementById('color').value, 'color'); // A CHANGER
+                        this.setStyle("span", document.getElementById('color').value, 'color');
                         break;
                     case "del":
                         this.setStyle("DEL");
@@ -82,7 +82,7 @@ class MyWysiwyg {
                         this.devMode();
                         break;
                     case "font-size":
-                        this.setStyle("span", document.getElementById('font-size').value, 'font-size');
+                        this.setStyle("span", document.getElementById('font-size').value + "px", 'font-size');
                         break;
                 }
             }
@@ -92,12 +92,10 @@ class MyWysiwyg {
     // SECURISE LE MULTI SELECTION DE MOZILLA, A CALL AVEC TT LES BOUTONS DE STYLE
     setStyle(style, value = null, type = null) {
         const selection = window.getSelection();
-        console.log(selection);
         if (selection.rangeCount > 0) {
             for (let i = 0; i < selection.rangeCount; i++) {
                 const range = selection.getRangeAt(i);
                 let node = range.startContainer.parentElement;
-                console.log("before");
                 if (this.isAlradyStyle(style, node, value, type) == -1) {
                     console.log("already style");
                     return;
@@ -120,14 +118,12 @@ class MyWysiwyg {
     }
 
     isAlradyStyle(style, node, value = null, type = null) {
-        if (type !== null && node.style[0] == value) {
-            console.log(node.style);
+        if (style == 'span' && node.tagName == 'SPAN') {
             node.style[type] = value;
             return -1;
         } else if ((node.nodeType === Node.ELEMENT_NODE) || (node.nodeType === Node.TEXT_NODE)) {
                 console.log("Element node:", node.tagName); // VERIFIE SI LE TYPE DU NODE EST UNE BALISE Exemple: DEL
-                if (node.tagName === style && (value === null || node.classList.contains(type))) {
-                    console.log(node);
+                if (node.tagName === style && (value === null)) {
                     return 1; 
                 } else { 
                     this.isAlradyStyle(style, node.childNodes, value);
@@ -139,25 +135,19 @@ class MyWysiwyg {
     // LE RANGECOUNT RENVOIE LE NOMBRE DE SELECTIONS QU'IL Y A SUR LA PAGE GetRangeAt
     // ContainsNode
 
-    // getCurrentRange() {
-    //     let selection = window.getSelection();
-    //     return selection.rangeCount ? selection.getRangeAt(0) : null;
-    // }
 
-    applyStyle(style, noeudsn, value = null, type = null) {      
+    applyStyle(style, noeuds, value = null, type = null) {      
         if (value !== null && type !== null) {
-            console.log("value", value);
-            console.log("type", type);
             let object = document.createElement(style);
             object.classList.add(type);
             object.style[type] = value;
-            object.appendChild(noeudsn.extractContents());
-            noeudsn.insertNode(object);
+            object.appendChild(noeuds.extractContents());
+            noeuds.insertNode(object);
             console.log(object);
         } else {  
             let object = document.createElement(style);
-            object.appendChild(noeudsn.extractContents());
-            noeudsn.insertNode(object);
+            object.appendChild(noeuds.extractContents());
+            noeuds.insertNode(object);
         }
     }
 
@@ -170,10 +160,10 @@ class MyWysiwyg {
             this.devView = true;
         } else {
             const editView = this.element.textContent;
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(editView, "text/html");
-            const parsedHtml = doc.body.innerHTML;
-            this.element.innerHTML = parsedHtml;
+            // const parser = new DOMParser();
+            // const doc = parser.parseFromString(editView, "text/html");
+            // const parsedHtml = doc.body.innerHTML;
+            this.element.innerHTML = editView;
             this.devView = false;
         }
     }
